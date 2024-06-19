@@ -25,7 +25,8 @@ public enum ErrorCode {
 	INVALID_SIGNATURE(400, "유효하지 않은 JWT 서명입니다."),
 	UNSUPPORTED_TOKEN(400, "지원되지 않는 JWT 토큰입니다."),
 	ILLEGAL_TOKEN(400, "잘못된 JWT 토큰입니다."),
-	RELOGIN_REQUIRED(401, "재로그인 해주세요");
+	RELOGIN_REQUIRED(401, "재로그인 해주세요"),
+	INVALID_REQUEST(400, "잘못된 요청입니다.");
 
 	private final int status;
 	private final String msg;
