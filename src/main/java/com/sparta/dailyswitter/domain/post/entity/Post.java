@@ -31,16 +31,16 @@ public class Post extends Timestamped {
 	private String title;
 	private String contents;
 
-	// @ManyToOne(fetch = FetchType.LAZY)
-	// @JoinColumn(name = "user_id")
-	// private User user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 
 
 	@Builder
 	public Post(String title, String contents, User user) {
 		this.title = title;
 		this.contents = contents;
-		// this.user = user;
+		this.user = user;
 	}
 
 	public void update(String title, String contents) {
