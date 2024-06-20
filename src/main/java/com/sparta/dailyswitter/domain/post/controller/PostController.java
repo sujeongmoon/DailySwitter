@@ -1,6 +1,7 @@
 package com.sparta.dailyswitter.domain.post.controller;
 
 import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sparta.dailyswitter.domain.post.dto.PostRequestDto;
 import com.sparta.dailyswitter.domain.post.dto.PostResponseDto;
 import com.sparta.dailyswitter.domain.post.service.PostService;
+import com.sparta.dailyswitter.security.UserDetailsServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,23 +26,32 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostController {
 
-	private PostService postService;
+	private final PostService postService;
 
 	@PostMapping
 	public ResponseEntity<?> createPost(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails) {
+		if (userDetails == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
+		}
 		PostResponseDto responseDto = postService.createPost(requestDto, userDetails.getUsername());
 		return ResponseEntity.ok(responseDto);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
-		PostResponseDto responseDto = postService.updatePost(id, requestDto);
+	public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails) {
+		if (userDetails == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
+		}
+		PostResponseDto responseDto = postService.updatePost(id, requestDto, userDetails.getUsername());
 		return ResponseEntity.ok(responseDto);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deletePost(@PathVariable Long id) {
-		postService.deletePost(id);
+	public ResponseEntity<?> deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+		if (userDetails == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
+		}
+		postService.deletePost(id, userDetails.getUsername());
 		return ResponseEntity.noContent().build();
 	}
 
