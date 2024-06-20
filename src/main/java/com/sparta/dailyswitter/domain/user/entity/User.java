@@ -56,7 +56,7 @@ public class User extends Timestamped {
 	private String refreshToken;
 
 	public boolean isExist() {
-		return this.role == UserRoleEnum.USER;
+		return this.role != UserRoleEnum.WITHDRAW;
 	}
 
 	public void updateRefresh(String refreshToken) {
