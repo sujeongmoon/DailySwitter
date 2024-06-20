@@ -34,15 +34,10 @@ public class AuthService {
 	private final PasswordEncoder passwordEncoder;
 	private final JwtUtil jwtUtil;
 
-	private String decodeAdminToken() {
-		return new String(java.util.Base64.getDecoder().decode(ADMIN_TOKEN));
-	}
-
 	@Transactional
 	public User signup(SignupRequestDto requestDto) throws IOException {
 		String userId = requestDto.getUserId();
 		String password = passwordEncoder.encode(requestDto.getPassword());
-		UserRoleEnum role = UserRoleEnum.USER;
 
 		Optional<User> checkUser = userRepository.findByUserId(userId);
 		if (checkUser.isPresent()) {
@@ -55,10 +50,10 @@ public class AuthService {
 			throw new CustomException(ErrorCode.EMAIL_NOT_UNIQUE);
 		}
 
+		UserRoleEnum role = UserRoleEnum.USER;
 		if (requestDto.isAdmin()) {
-			String decodedAdminToken = decodeAdminToken();
-			if (!decodedAdminToken.equals(requestDto.getAdminToken())) {
-				throw new CustomException(ErrorCode.INCORRECT_PASSWORD);
+			if (!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
+				throw new CustomException(ErrorCode.INCORRECT_ADMIN_KEY);
 			}
 			role = UserRoleEnum.ADMIN;
 		}
