@@ -1,6 +1,7 @@
 package com.sparta.dailyswitter.domain.comment.service;
 
 import static com.sparta.dailyswitter.common.exception.ErrorCode.COMMENT_NOT_FOUND;
+import static com.sparta.dailyswitter.common.exception.ErrorCode.COMMENT_NOT_USER;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class CommentService {
 
 	public List<CommentResponseDto> getComment(Long postId) {
 		List<Comment> commentList = commentRepository.findByPostId(postId);
-		if (commentList.isEmpty()){
+		if (commentList.isEmpty()) {
 			throw new CustomException(COMMENT_NOT_FOUND);
 		}
 		List<CommentResponseDto> commentResponseDtoList = commentList.stream()
@@ -50,5 +51,30 @@ public class CommentService {
 				.build())
 			.toList();
 		return commentResponseDtoList;
+	}
+
+	public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto, User user) {
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
+
+		if (!comment.getUser().getId().equals(user.getId())) {
+			throw new CustomException(COMMENT_NOT_USER);
+		}
+		comment.updateComment(requestDto);
+
+		return CommentResponseDto.builder()
+			.comment(comment)
+			.build();
+	}
+
+	public void deleteComment(Long commentId, User user) {
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
+
+		if (!comment.getUser().getId().equals(user.getId())) {
+			throw new CustomException(COMMENT_NOT_USER);
+		}
+
+		commentRepository.delete(comment);
 	}
 }
