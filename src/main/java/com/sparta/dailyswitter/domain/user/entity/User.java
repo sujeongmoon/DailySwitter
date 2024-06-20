@@ -1,6 +1,7 @@
 package com.sparta.dailyswitter.domain.user.entity;
 
 import com.sparta.dailyswitter.common.util.Timestamped;
+import com.sparta.dailyswitter.domain.user.dto.UserInfoUpdateDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,14 +12,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Builder
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "users")
 public class User extends Timestamped {
 	@Id
@@ -27,7 +30,7 @@ public class User extends Timestamped {
 	private Long id;
 
 	@NotBlank
-	@Column(name = "user_id")
+	@Column(name = "user_id", length = 10)
 	private String userId;
 
 	@NotBlank
@@ -35,7 +38,7 @@ public class User extends Timestamped {
 	private String username;
 
 	@NotBlank
-	@Column(name = "password")
+	@Column(name = "password", length = 15)
 	private String password;
 
 	@NotBlank
@@ -46,7 +49,25 @@ public class User extends Timestamped {
 	@Column(name = "intro")
 	private String intro;
 
+	@Column(name = "refresh_token")
+	private String refreshToken;
+
 	@Column(nullable = false)
 	@Enumerated(value = EnumType.STRING)
 	private UserRoleEnum role;
+
+	public void updateUserInfo(UserInfoUpdateDto userInfoUpdateDto) {
+		this.username = userInfoUpdateDto.getName();
+		this.email = userInfoUpdateDto.getEmail();
+		this.intro = userInfoUpdateDto.getIntro();
+	}
+
+	public boolean isExist() {
+		return this.role == UserRoleEnum.USER;
+	}
+
+	public void updateRefresh(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
 }
+

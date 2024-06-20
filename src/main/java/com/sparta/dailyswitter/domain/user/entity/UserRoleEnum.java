@@ -17,3 +17,4 @@ public enum UserRoleEnum {
 		public static final String WITHDRAW = "ROLE_WITHDRAW";
 	}
 }
+

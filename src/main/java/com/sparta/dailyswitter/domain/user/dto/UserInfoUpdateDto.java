@@ -11,10 +11,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserInfoUpdateDto {
 	private String name;
+	private String email;
 	private String intro;
 
 	public UserInfoUpdateDto(User user) {
 		this.name = user.getUsername();
+		this.email = user.getEmail();
 		this.intro = user.getIntro();
 	}
 }
