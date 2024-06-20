@@ -53,10 +53,15 @@ public class CommentService {
 		return commentResponseDtoList;
 	}
 
-	public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto, User user) {
+	@Transactional
+	public CommentResponseDto updateComment(Long postId, Long commentId, CommentRequestDto requestDto, User user) {
+		Post post = postService.findById(postId);
 		Comment comment = commentRepository.findById(commentId)
 			.orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
 
+		if (!comment.getPost().getId().equals(post.getId())) {
+			throw new CustomException(COMMENT_NOT_FOUND);
+		}
 		if (!comment.getUser().getId().equals(user.getId())) {
 			throw new CustomException(COMMENT_NOT_USER);
 		}
@@ -67,7 +72,8 @@ public class CommentService {
 			.build();
 	}
 
-	public void deleteComment(Long commentId, User user) {
+	@Transactional
+	public void deleteComment(Long postId, Long commentId, User user) {
 		Comment comment = commentRepository.findById(commentId)
 			.orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
 

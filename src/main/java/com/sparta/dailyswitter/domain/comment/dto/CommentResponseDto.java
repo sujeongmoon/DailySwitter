@@ -17,7 +17,7 @@ public class CommentResponseDto {
 
 	@Builder
 	public CommentResponseDto(Comment comment) {
-		this.postTitle = comment.getPost().getPostId();
+		this.postTitle = comment.getPost().getTitle();
 		this.content = comment.getContent();
 		this.userId = comment.getUser().getUserId();
 		this.createdAt = comment.getCreatedAt();
