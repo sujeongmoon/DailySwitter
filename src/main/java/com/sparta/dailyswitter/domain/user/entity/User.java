@@ -14,13 +14,13 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Table(name = "users")
 public class User extends Timestamped {
 	@Id
@@ -29,19 +29,19 @@ public class User extends Timestamped {
 	private Long id;
 
 	@NotBlank
-	@Column(name = "user_id")
+	@Column(name = "user_id", nullable = false, unique = true)
 	private String userId;
 
 	@NotBlank
-	@Column(name = "user_name")
+	@Column(name = "user_name", nullable = false, unique = true)
 	private String username;
 
 	@NotBlank
-	@Column(name = "password")
+	@Column(name = "password", nullable = false)
 	private String password;
 
 	@NotBlank
-	@Column(name = "email")
+	@Column(name = "email", nullable = false)
 	private String email;
 
 	@NotBlank
@@ -61,5 +61,9 @@ public class User extends Timestamped {
 
 	public void updateRefresh(String refreshToken) {
 		this.refreshToken = refreshToken;
+	}
+
+	public void updateStatusSignout() {
+		this.role = UserRoleEnum.WITHDRAW;
 	}
 }

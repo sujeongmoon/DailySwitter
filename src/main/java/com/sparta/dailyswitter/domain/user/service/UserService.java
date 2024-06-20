@@ -8,7 +8,4 @@ import com.sparta.dailyswitter.domain.user.entity.User;
 
 @Service
 public class UserService {
-	public User createUser(SignupRequestDto requestDto, MultipartFile file) {
-		return null;
-	}
 }
