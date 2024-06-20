@@ -46,7 +46,7 @@ public class AuthController {
 
 	@PutMapping("/signout")
 	public ResponseEntity<String> signout(@RequestBody SignoutRequestDto requestDto,
-								  		  @AuthenticationPrincipal UserDetailsImpl userDetails) {
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		authService.signout(requestDto, userDetails.getUser());
 		return ResponseEntity.ok("탈퇴가 완료되었습니다.");
 	}
