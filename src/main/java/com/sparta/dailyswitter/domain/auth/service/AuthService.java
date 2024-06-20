@@ -15,7 +15,7 @@ import com.sparta.dailyswitter.common.exception.CustomException;
 import com.sparta.dailyswitter.common.exception.ErrorCode;
 import com.sparta.dailyswitter.domain.auth.dto.LoginRequestDto;
 import com.sparta.dailyswitter.domain.auth.dto.LoginResponseDto;
-// import com.sparta.dailyswitter.domain.auth.dto.SignoutRequestDto;
+import com.sparta.dailyswitter.domain.auth.dto.SignoutRequestDto;
 import com.sparta.dailyswitter.domain.auth.dto.SignupRequestDto;
 import com.sparta.dailyswitter.domain.user.entity.User;
 import com.sparta.dailyswitter.domain.user.entity.UserRoleEnum;
@@ -93,17 +93,17 @@ public class AuthService {
 		userRepository.save(user);
 	}
 
-	// public void signout(SignoutRequestDto requestDto, User user) {
-	// 	if (!user.isExist()) {
-	// 		throw new CustomException(ErrorCode.USER_NOT_FOUND);
-	// 	}
-	//
-	// 	String password = requestDto.getPassword();
-	// 	if (!passwordEncoder.matches(password, user.getPassword())) {
-	// 		throw new CustomException(ErrorCode.INCORRECT_PASSWORD);
-	// 	}
-	//
-	// 	user.updateStatusSignout();
-	// 	userRepository.save(user);
-	// }
+	public void signout(SignoutRequestDto requestDto, User user) {
+		if (!user.isExist()) {
+			throw new CustomException(ErrorCode.USER_NOT_FOUND);
+		}
+
+		String password = requestDto.getPassword();
+		if (!passwordEncoder.matches(password, user.getPassword())) {
+			throw new CustomException(ErrorCode.INCORRECT_PASSWORD);
+		}
+
+		user.updateStatusSignout();
+		userRepository.save(user);
+	}
 }
