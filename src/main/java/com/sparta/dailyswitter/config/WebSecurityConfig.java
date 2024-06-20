@@ -11,10 +11,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.sparta.dailyswitter.domain.user.repository.UserRepository;
+import com.sparta.dailyswitter.security.JwtAuthorizationFilter;
 import com.sparta.dailyswitter.security.UserDetailsServiceImpl;
 import com.sparta.dailyswitter.security.JwtUtil;
 
@@ -28,6 +31,7 @@ public class WebSecurityConfig {
 	private final JwtUtil jwtUtil;
 	private final UserDetailsServiceImpl userDetailsService;
 	private final AuthenticationConfiguration authenticationConfiguration;
+	private final UserRepository userRepository; // JWT 인증추가
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -41,7 +45,9 @@ public class WebSecurityConfig {
 					"/v2/api-docs", "/v3/api-docs", "/v3/api-docs/**", "/swagger-resources",
 					"/swagger-resources/**", "/configuration/ui", "/configuration/security", "/swagger-ui/**",
 					"/webjars/**", "/swagger-ui.html", "/api/**").permitAll()
-			);
+				.anyRequest().authenticated()
+			)
+			.addFilterBefore(new JwtAuthorizationFilter(jwtUtil, userDetailsService, userRepository), UsernamePasswordAuthenticationFilter.class);// JWT 인증 추가
 		return http.build();
 	}
 
