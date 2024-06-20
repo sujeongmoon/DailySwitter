@@ -36,7 +36,7 @@ public class User extends Timestamped {
 	private Long id;
 
 	@NotBlank
-	@Column(name = "user_id", length = 10)
+	@Column(name = "user_id", nullable = false, unique = true, length = 10)
 	private String userId;
 
 	@NotBlank
@@ -44,7 +44,7 @@ public class User extends Timestamped {
 	private String username;
 
 	@NotBlank
-	@Column(name = "password", length = 15)
+	@Column(name = "password", nullable = false, length = 15)
 	private String password;
 
 	@NotBlank
@@ -80,11 +80,15 @@ public class User extends Timestamped {
 	}
 
 	public boolean isExist() {
-		return this.role == UserRoleEnum.USER;
+		return this.role != UserRoleEnum.WITHDRAW;
 	}
 
 	public void updateRefresh(String refreshToken) {
 		this.refreshToken = refreshToken;
+	}
+
+	public void updateStatusSignout() {
+		this.role = UserRoleEnum.WITHDRAW;
 	}
 
 	private String updateField(String newValue, String currentValue) {
