@@ -7,18 +7,14 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 @Builder
-public class UserResponseDto {
-	private String userId;
+@RequiredArgsConstructor
+public class UserInfoUpdateDto {
 	private String name;
-	private String email;
 	private String intro;
 
-	public UserResponseDto(User user) {
-		this.userId = user.getUserId();
+	public UserInfoUpdateDto(User user) {
 		this.name = user.getUsername();
-		this.email = user.getEmail();
 		this.intro = user.getIntro();
 	}
 }
