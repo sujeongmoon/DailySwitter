@@ -1,10 +1,12 @@
 package com.sparta.dailyswitter.domain.user.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.sparta.dailyswitter.common.exception.CustomException;
 import com.sparta.dailyswitter.common.exception.ErrorCode;
-import com.sparta.dailyswitter.domain.user.dto.UserInfoUpdateDto;
+import com.sparta.dailyswitter.domain.user.dto.UserInfoRequestDto;
+import com.sparta.dailyswitter.domain.user.dto.UserPwRequestDto;
 import com.sparta.dailyswitter.domain.user.dto.UserResponseDto;
 import com.sparta.dailyswitter.domain.user.entity.User;
 import com.sparta.dailyswitter.domain.user.repository.UserRepository;
@@ -16,25 +18,40 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
 	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
 
 	public UserResponseDto getUser(Long id) {
-		// DB에 존재하는 User
 		User user = findUser(id);
 
 		return new UserResponseDto(user);
 	}
 
-	public UserInfoUpdateDto updateUser(Long id, UserInfoUpdateDto userInfoUpdateDto) {
-		// DB에 존재하는 User
+	public UserResponseDto updateUserInfo(Long id, UserInfoRequestDto userInfoRequestDto) {
 		User user = findUser(id);
 
-		// User 정보 수정
-		user.updateUserInfo(userInfoUpdateDto);
+		user.updateUserInfo(userInfoRequestDto);
+		userRepository.save(user);
 
-		return new UserInfoUpdateDto(user);
+		return new UserResponseDto(user);
 	}
 
-	// Id로 User 찾기
+	public UserResponseDto updatePassword(Long id, UserPwRequestDto userPwRequestDto) {
+		User user = findUser(id);
+
+		if (!passwordEncoder.matches(userPwRequestDto.getNewPassword(), user.getPassword())) {
+			throw new CustomException(ErrorCode.INCORRECT_PASSWORD);
+		}
+
+		if (user.getPasswordHistory().contains(userPwRequestDto.getNewPassword())) {
+			throw new CustomException(ErrorCode.DUPLICATE_PASSWORD);
+		}
+
+		user.updatePassword(passwordEncoder.encode(userPwRequestDto.getNewPassword()));
+		userRepository.save(user);
+
+		return new UserResponseDto(user);
+	}
+
 	private User findUser(Long id) {
 		return userRepository.findById(id)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
