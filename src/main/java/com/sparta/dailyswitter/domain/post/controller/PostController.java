@@ -1,6 +1,9 @@
 package com.sparta.dailyswitter.domain.post.controller;
 
 import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sparta.dailyswitter.domain.post.dto.PostRequestDto;
@@ -22,7 +26,7 @@ import com.sparta.dailyswitter.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/post")
+@RequestMapping("/api/posts")
 @RequiredArgsConstructor
 public class PostController {
 
@@ -52,12 +56,18 @@ public class PostController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
 		}
 		postService.deletePost(id, userDetails.getUsername());
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.ok("게시물이 삭제되었습니다.");
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getPost(@PathVariable Long id) {
 		PostResponseDto responseDto = postService.getPost(id);
 		return ResponseEntity.ok(responseDto);
+	}
+
+	@GetMapping
+	public Page<PostResponseDto> getAllPosts(@RequestParam(defaultValue = "0") int page) {
+		Pageable pageable = PageRequest.of(page, 5);
+		return postService.getAllPosts(pageable);
 	}
 }

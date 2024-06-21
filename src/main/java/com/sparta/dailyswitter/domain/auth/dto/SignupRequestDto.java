@@ -1,5 +1,6 @@
 package com.sparta.dailyswitter.domain.auth.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -14,7 +15,7 @@ public class SignupRequestDto {
 
 	@Size(min = 8, max = 15, message = "비밀번호는 최소 8자 이상 15자 이하입니다.")
 	@Pattern(
-		regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,15}$",
+		regexp = "^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$",
 		message = "비밀번호는 알파벳 대소문자, 숫자, 특수문자를 최소 1글자씩 포함해야 합니다."
 	)
 	@NotBlank

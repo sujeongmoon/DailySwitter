@@ -23,12 +23,6 @@ public class UserDetailsImpl implements UserDetails {
 	}
 
 	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		UserRoleEnum role = user.getRole();
-		return Collections.singleton(new SimpleGrantedAuthority(role.getAuthority()));
-	}
-
-	@Override
 	public String getPassword() {
 		return user.getPassword();
 	}
@@ -36,6 +30,12 @@ public class UserDetailsImpl implements UserDetails {
 	@Override
 	public String getUsername() {
 		return user.getUserId();
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		UserRoleEnum role = user.getRole();
+		return Collections.singleton(new SimpleGrantedAuthority(role.getAuthority()));
 	}
 
 	@Override

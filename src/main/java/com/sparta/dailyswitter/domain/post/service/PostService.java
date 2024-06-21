@@ -1,5 +1,7 @@
 package com.sparta.dailyswitter.domain.post.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -83,6 +85,12 @@ public class PostService {
 		return convertToDto(post);
 	}
 
+	@Transactional(readOnly = true)
+	public Page<PostResponseDto> getAllPosts(Pageable pageable) {
+		return postRepository.findAllByOrderByCreatedAtDesc(pageable)
+			.map(this::convertToDto);
+	}
+
 	public Post findById(Long postId) {
 		return postRepository.findById(postId).orElseThrow(
 			() -> new CustomException(ErrorCode.POST_NOT_FOUND)
@@ -91,11 +99,9 @@ public class PostService {
 
 	private PostResponseDto convertToDto(Post post) {
 		return PostResponseDto.builder()
-			.id(post.getId())
 			.title(post.getTitle())
 			.contents(post.getContents())
 			.userId(post.getUser().getUserId())
-			.email(post.getUser().getEmail())
 			.createdAt(post.getCreatedAt())
 			.updatedAt(post.getUpdatedAt())
 			.build();

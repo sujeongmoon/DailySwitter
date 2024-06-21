@@ -95,11 +95,6 @@ public class JwtUtil {
 		return substringToken(bearerToken);
 	}
 
-	public String getRefreshJwtFromHeader(HttpServletRequest request) {
-		String refreshToken = request.getHeader(REFRESH_TOKEN_HEADER);
-		return substringToken(refreshToken);
-	}
-
 	public Boolean isTokenExpired(String token) {
 		Claims claims = getUserInfoFromToken(token);
 		Date date = claims.getExpiration();

@@ -7,22 +7,18 @@ import lombok.Getter;
 
 @Getter
 public class PostResponseDto {
-	private final Long id;
 	private final String title;
 	private final String contents;
 	private final String userId;
-	private final String email;
 	private final LocalDateTime createdAt;
 	private final LocalDateTime updatedAt;
 
 	@Builder
-	public PostResponseDto(Long id, String title, String contents, String userId, String email, LocalDateTime createdAt,
+	public PostResponseDto(String title, String contents, String userId, LocalDateTime createdAt,
 		LocalDateTime updatedAt) {
-		this.id = id;
 		this.title = title;
 		this.contents = contents;
 		this.userId = userId;
-		this.email = email;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}

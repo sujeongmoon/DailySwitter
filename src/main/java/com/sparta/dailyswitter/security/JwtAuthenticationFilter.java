@@ -18,21 +18,15 @@ import com.sparta.dailyswitter.domain.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	private final JwtUtil jwtUtil;
 	private final AuthenticationManager authenticationManager;
 	private final UserRepository userRepository;
-
-	public JwtAuthenticationFilter(JwtUtil jwtUtil, AuthenticationManager authenticationManager,
-		UserRepository userRepository) {
-		this.jwtUtil = jwtUtil;
-		this.authenticationManager = authenticationManager;
-		this.userRepository = userRepository;
-		setFilterProcessesUrl("/api/auth/login");
-	}
 
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -54,8 +48,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-											FilterChain chain, Authentication authentication) {
-		User user = ((UserDetailsImpl) authentication.getPrincipal()).getUser();
+		FilterChain chain, Authentication authentication) {
+		User user = ((UserDetailsImpl)authentication.getPrincipal()).getUser();
 		String userId = user.getUserId();
 
 		String token = jwtUtil.createToken(userId);
@@ -73,5 +67,4 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		AuthenticationException failed) {
 		response.setStatus(401);
 	}
-
 }

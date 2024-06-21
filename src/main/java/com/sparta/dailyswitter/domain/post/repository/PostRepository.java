@@ -13,18 +13,5 @@ import com.sparta.dailyswitter.domain.user.entity.User;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-	Page<Post> findByTitleContainingAndCreatedAtBetween(
-		String title,
-		LocalDateTime start,
-		LocalDateTime end,
-		Pageable pageable
-	);
-
-	Page<Post> findByTitleContainingAndCreatedAtBetweenAndUserIn(
-		String title,
-		LocalDateTime start,
-		LocalDateTime end,
-		List<User> users,
-		Pageable pageable
-	);
+	Page<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }
