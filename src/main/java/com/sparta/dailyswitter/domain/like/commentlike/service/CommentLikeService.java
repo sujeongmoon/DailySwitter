@@ -48,4 +48,27 @@ public class CommentLikeService {
 		commentLikeRepository.save(commentLike);
 	}
 
+	public void deleteCommentLike(Long postId, Long commentId, User user) {
+		Comment comment = commentService.findById(commentId);
+		Post post = postService.findById(postId);
+
+		CommentLikeId commentLikeId = CommentLikeId.builder()
+			.user(user)
+			.post(post)
+			.build();
+
+		if (commentLikeRepository.findById(commentLikeId).isEmpty()) {
+			throw new CustomException(ErrorCode.COMMENT_LIKE_NOT_EXIST);
+		}
+
+		commentService.checkCommentPostNotFound(comment, post);
+		commentService.checkCommentUserFound(comment, user);
+
+
+		CommentLike commentLike = CommentLike.builder()
+			.id(commentLikeId)
+			.build();
+
+		commentLikeRepository.delete(commentLike);
+	}
 }

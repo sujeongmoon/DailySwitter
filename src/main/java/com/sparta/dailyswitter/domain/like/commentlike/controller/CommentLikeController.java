@@ -3,6 +3,7 @@ package com.sparta.dailyswitter.domain.like.commentlike.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,4 +30,12 @@ public class CommentLikeController {
 			.body("댓글 좋아요가 등록되었습니다.");
 	}
 
+	@DeleteMapping("/posts/{postId}/comments/{commentId}/likes")
+	public ResponseEntity<String> deleteCommentLikes(@PathVariable Long postId,
+		@PathVariable Long commentId,
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		commentLikeService.deleteCommentLike(postId, commentId, userDetails.getUser());
+		return ResponseEntity.status(HttpStatus.OK)
+			.body("댓글 좋아요가 삭제되었습니다.");
+	}
 }

@@ -22,5 +22,4 @@ public class CommentLike extends Timestamped {
 	public CommentLike (CommentLikeId id) {
 		this.id = id;
 	}
-
 }
