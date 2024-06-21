@@ -99,11 +99,9 @@ public class PostService {
 
 	private PostResponseDto convertToDto(Post post) {
 		return PostResponseDto.builder()
-			.id(post.getId())
 			.title(post.getTitle())
 			.contents(post.getContents())
 			.userId(post.getUser().getUserId())
-			.email(post.getUser().getEmail())
 			.createdAt(post.getCreatedAt())
 			.updatedAt(post.getUpdatedAt())
 			.build();

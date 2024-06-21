@@ -33,7 +33,7 @@ public class CommentController {
 	public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long postId,
 		@RequestBody @Valid CommentRequestDto requestDto,
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		return ResponseEntity.status(HttpStatus.CREATED)
+		return ResponseEntity.status(HttpStatus.OK)
 			.body(commentService.createComment
 			(postId, requestDto, userDetails.getUser()));
 	}

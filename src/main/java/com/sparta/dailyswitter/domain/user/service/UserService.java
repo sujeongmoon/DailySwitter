@@ -38,11 +38,11 @@ public class UserService {
 	public UserResponseDto updatePassword(Long id, UserPwRequestDto userPwRequestDto) {
 		User user = findUser(id);
 
-		if (!passwordEncoder.matches(userPwRequestDto.getNewPassword(), user.getPassword())) {
+		if (!passwordEncoder.matches(userPwRequestDto.getCurrentPassword(), user.getPassword())) {
 			throw new CustomException(ErrorCode.INCORRECT_PASSWORD);
 		}
 
-		if (user.getPasswordHistory().contains(userPwRequestDto.getNewPassword())) {
+		if (user.isPasswordInHistory(userPwRequestDto.getNewPassword(), passwordEncoder)) {
 			throw new CustomException(ErrorCode.DUPLICATE_PASSWORD);
 		}
 

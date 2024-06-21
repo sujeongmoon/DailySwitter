@@ -56,7 +56,7 @@ public class PostController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
 		}
 		postService.deletePost(id, userDetails.getUsername());
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.ok("게시물이 삭제되었습니다.");
 	}
 
 	@GetMapping("/{id}")
