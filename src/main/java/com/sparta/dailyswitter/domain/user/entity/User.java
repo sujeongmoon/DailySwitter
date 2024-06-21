@@ -3,6 +3,8 @@ package com.sparta.dailyswitter.domain.user.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.sparta.dailyswitter.common.util.Timestamped;
 import com.sparta.dailyswitter.domain.user.dto.UserInfoRequestDto;
 
@@ -77,6 +79,15 @@ public class User extends Timestamped {
 		}
 		this.passwordHistory.add(this.password);
 		this.password = newPassword;
+	}
+
+	public boolean isPasswordInHistory(String password, PasswordEncoder passwordEncoder) {
+		for (String oldPassword : passwordHistory) {
+			if (passwordEncoder.matches(password, oldPassword)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public boolean isExist() {
