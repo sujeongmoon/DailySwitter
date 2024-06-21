@@ -44,7 +44,7 @@ public class User extends Timestamped {
 	private String username;
 
 	@NotBlank
-	@Column(name = "password", nullable = false, length = 15)
+	@Column(name = "password", nullable = false, length = 254)
 	private String password;
 
 	@NotBlank
