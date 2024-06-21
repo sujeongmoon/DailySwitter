@@ -19,6 +19,7 @@ public enum ErrorCode {
 	COMMENT_NOT_FOUND(404,"댓글을 찾을 수 없습니다."),
 	COMMENT_NOT_USER(400, "해당 댓글의 작성자가 아닙니다."),
 	COMMENT_SAME_USER(400, "해당 댓글의 작성자입니다."),
+	COMMENT_LIKE_EXIST(400, "이미 좋아요가 등록되어있습니다."),
 	TOKEN_EXPIRED(400, "토큰이 만료되었습니다."),
 	TOKEN_NOT_FOUND(400, "토큰을 찾을 수 없습니다."),
 	INVALID_SIGNATURE(400, "유효하지 않은 JWT 서명입니다."),

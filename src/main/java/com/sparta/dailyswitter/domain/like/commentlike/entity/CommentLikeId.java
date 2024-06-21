@@ -1,4 +1,37 @@
 package com.sparta.dailyswitter.domain.like.commentlike.entity;
 
-public class CommentLikeId {
+import java.io.Serializable;
+
+import com.sparta.dailyswitter.domain.post.entity.Post;
+import com.sparta.dailyswitter.domain.user.entity.User;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@Embeddable
+@EqualsAndHashCode
+@NoArgsConstructor
+public class CommentLikeId implements Serializable {
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	private User user;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "post_id")
+	private Post post;
+
+	@Builder
+	public CommentLikeId(User user, Post post) {
+		this.user = user;
+		this.post = post;
+	}
 }
