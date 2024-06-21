@@ -16,7 +16,6 @@ public enum ErrorCode {
 	POST_NOT_FOUND(404, "게시물을 찾을 수 없습니다."),
 	POST_NOT_USER(400, "해당 게시물의 작성자가 아닙니다."),
 	POST_SAME_USER(400, "해당 게시물의 작성자입니다."),
-	POST_EMPTY(204, "게시물이 존재하지 않습니다."),
 	COMMENT_NOT_FOUND(404, "댓글을 찾을 수 없습니다."),
 	COMMENT_NOT_USER(400, "해당 댓글의 작성자가 아닙니다."),
 	COMMENT_SAME_USER(400, "해당 댓글의 작성자입니다."),
