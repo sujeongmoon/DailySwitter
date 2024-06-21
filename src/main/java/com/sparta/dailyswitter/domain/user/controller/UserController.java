@@ -19,7 +19,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "User API", description = "사용자 정보에 대한 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
@@ -27,7 +26,6 @@ public class UserController {
 
 	private final UserService userService;
 
-	@Operation(summary = "Get User", description = "프로필 조회 기능입니다.")
 	@GetMapping
 	public ResponseEntity<UserResponseDto> getUser(
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -35,7 +33,6 @@ public class UserController {
 		return ResponseEntity.ok().body(userService.getUser(userDetails.getUser().getId()));
 	}
 
-	@Operation(summary = "Update User Info", description = "프로필 기본정보에 대한 수정 기능입니다.")
 	@PutMapping
 	public ResponseEntity<UserResponseDto> updateUserInfo(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -44,7 +41,6 @@ public class UserController {
 		return ResponseEntity.ok().body(userService.updateUserInfo(userDetails.getUser().getId(), userInfoRequestDto));
 	}
 
-	@Operation(summary = "Update Password", description = "사용자의 비밀번호 수정 기능입니다.")
 	@PutMapping("/password")
 	public ResponseEntity<UserResponseDto> updatePassword(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
