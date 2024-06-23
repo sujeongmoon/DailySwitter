@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class JwtUtil {
 
-	@Value("${jwt.secret.key}")
+	@Value("${JWT_SECRET_KEY}")
 	private String secretKey;
 
 	public static final String AUTHORIZATION_HEADER = "Authorization";
@@ -84,7 +84,7 @@ public class JwtUtil {
 	}
 
 	public String substringToken(String token) {
-		if (StringUtils.hasText(token)&&token.startsWith(BEARER_PREFIX)) {
+		if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
 			return token.substring(7);
 		}
 		return null;

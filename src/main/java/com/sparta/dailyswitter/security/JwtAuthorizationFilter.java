@@ -3,11 +3,6 @@ package com.sparta.dailyswitter.security;
 import java.io.IOException;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.sparta.dailyswitter.common.exception.CustomException;
@@ -31,59 +26,32 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 	private final UserRepository userRepository;
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-		FilterChain filterChain) throws ServletException, IOException {
-
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		String tokenValue = jwtUtil.getJwtFromHeader(request);
 
 		log.info(tokenValue);
-		if (StringUtils.hasText(tokenValue) && !request.getRequestURI().startsWith("/api/auth/login")) {
+		if (tokenValue != null && !tokenValue.isEmpty()) {
 			if (!jwtUtil.validateToken(tokenValue)) {
 				log.error("Token Error");
+				response.sendError(HttpServletResponse.SC_FORBIDDEN, "유효하지 않은 토큰입니다.");
 				return;
 			}
 			Claims claims = jwtUtil.getUserInfoFromToken(tokenValue);
 			log.info("Subject: " + claims.getSubject());
 			String userId = claims.getSubject();
 
-			User user = userRepository.findByUserId(userId).orElseThrow(
-				() -> new CustomException(ErrorCode.USER_NOT_FOUND)
-			);
+			User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 			if (!user.isExist()) {
 				throw new CustomException(ErrorCode.USER_NOT_FOUND);
 			}
-
-			String userRefreshToken = jwtUtil.substringToken(user.getRefreshToken());
-			if (jwtUtil.isTokenExpired(tokenValue)) {
-				if (!jwtUtil.isRefreshTokenExpired(userRefreshToken)) {
-					jwtUtil.createToken(user.getUserId());
-					String newToken = jwtUtil.createToken(user.getUserId());
-					log.info("새로운 토큰이 생성되었습니다: {}", newToken);
-					jwtUtil.createRefreshToken(user.getUserId());
-					log.info("새로운 토큰이 생성되었습니다.");
-					setAuthentication(claims.getSubject());
-					filterChain.doFilter(request, response);
-				} else {
-					throw new CustomException(ErrorCode.RELOGIN_REQUIRED);
-				}
-			} else {
-				setAuthentication(claims.getSubject());
-			}
+			setAuthentication(claims.getSubject());
 		}
 		filterChain.doFilter(request, response);
 	}
 
-	public void setAuthentication(String username) {
-		SecurityContext context = SecurityContextHolder.createEmptyContext();
-		Authentication authentication = createAuthentication(username);
-		context.setAuthentication(authentication);
-
-		SecurityContextHolder.setContext(context);
-	}
-
-	private Authentication createAuthentication(String username) {
-		UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-		return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+	private void setAuthentication(String username) {
+		UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+		authentication.setDetails(userDetails);
 	}
 }
-

@@ -64,9 +64,23 @@ public class User extends Timestamped {
 	@Enumerated(value = EnumType.STRING)
 	private UserRoleEnum role;
 
+	private Long kakaoId;
+
+	private String provider;
+
+	private String providerId;
+
 	@ElementCollection
 	@CollectionTable(name = "password_history", joinColumns = @JoinColumn(name = "user_id"))
 	private List<String> passwordHistory = new ArrayList<>();
+
+	public User(String username, String password, String email, UserRoleEnum role, Long kakaoId) {
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.role = role;
+		this.kakaoId = kakaoId;
+	}
 
 	public void updateUserInfo(UserInfoRequestDto userInfoRequestDto) {
 		this.username = updateField(userInfoRequestDto.getUsername(), username);
