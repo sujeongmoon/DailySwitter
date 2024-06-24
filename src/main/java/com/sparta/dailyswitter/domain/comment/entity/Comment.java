@@ -1,7 +1,5 @@
 package com.sparta.dailyswitter.domain.comment.entity;
 
-import java.sql.Time;
-
 import com.sparta.dailyswitter.common.util.Timestamped;
 import com.sparta.dailyswitter.domain.comment.dto.CommentRequestDto;
 import com.sparta.dailyswitter.domain.post.entity.Post;
@@ -41,15 +39,26 @@ public class Comment extends Timestamped {
 	@Column
 	private String content;
 
+	@Column
+	private Long commentLikes;
+
 	@Builder
-	public Comment(User user, Post post, CommentRequestDto requestDto){
+	public Comment(User user, Post post, CommentRequestDto requestDto) {
 		this.user = user;
 		this.post = post;
 		this.content = requestDto.getContent();
+		this.commentLikes = 0L;
 	}
 
 	public void updateComment(CommentRequestDto requestDto) {
 		this.content = requestDto.getContent();
 	}
 
+	public void addCommentLikes() {
+		this.commentLikes = commentLikes + 1L;
+	}
+
+	public void subCommentLikes() {
+		this.commentLikes = commentLikes - 1L;
+	}
 }

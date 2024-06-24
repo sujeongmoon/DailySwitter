@@ -1,6 +1,5 @@
 package com.sparta.dailyswitter.domain.post.repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -13,5 +12,7 @@ import com.sparta.dailyswitter.domain.user.entity.User;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
+	Page<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
+	Page<Post> findByUserInOrderByCreatedAtDesc(List<User> users, Pageable pageable);
 	Page<Post> findAllByOrderByIsPinnedDescCreatedAtDesc(Pageable pageable);
 }
