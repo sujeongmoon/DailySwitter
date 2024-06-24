@@ -8,11 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,18 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sparta.dailyswitter.domain.comment.dto.CommentRequestDto;
 import com.sparta.dailyswitter.domain.comment.dto.CommentResponseDto;
-import com.sparta.dailyswitter.domain.comment.entity.Comment;
 import com.sparta.dailyswitter.domain.comment.service.CommentService;
 import com.sparta.dailyswitter.domain.post.dto.PostRequestDto;
 import com.sparta.dailyswitter.domain.post.dto.PostResponseDto;
-import com.sparta.dailyswitter.domain.post.entity.Post;
 import com.sparta.dailyswitter.domain.post.service.PostService;
 import com.sparta.dailyswitter.domain.user.dto.UserInfoRequestDto;
 import com.sparta.dailyswitter.domain.user.dto.UserResponseDto;
 import com.sparta.dailyswitter.domain.user.dto.UserRoleChangeRequestDto;
-import com.sparta.dailyswitter.domain.user.entity.User;
 import com.sparta.dailyswitter.domain.user.service.UserService;
-import com.sparta.dailyswitter.security.UserDetailsImpl;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -73,7 +66,7 @@ public class AdminController {
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@PatchMapping("/users/{userId}/role")
+	@PutMapping("/users/{userId}/role")
 	public ResponseEntity<UserResponseDto> changeUserRole(
 		@PathVariable Long userId,
 		@RequestBody UserRoleChangeRequestDto userRoleChangeRequestDto) {
@@ -82,7 +75,7 @@ public class AdminController {
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@PatchMapping("/users/{userId}/block")
+	@PutMapping("/users/{userId}/block")
 	public ResponseEntity<UserResponseDto> toggleBlockStatus(
 		@PathVariable Long userId) {
 
@@ -119,7 +112,7 @@ public class AdminController {
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@PatchMapping("/posts/{postId}/pin")
+	@PutMapping("/posts/{postId}/pin")
 	public ResponseEntity<PostResponseDto> pinPost(
 		@PathVariable Long postId) {
 
