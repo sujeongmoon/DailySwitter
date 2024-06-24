@@ -39,16 +39,28 @@ public class Post extends Timestamped {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
+	@Column
+	private Long postLikes;
+
 
 	@Builder
 	public Post(String title, String contents, User user) {
 		this.title = title;
 		this.contents = contents;
 		this.user = user;
+		this.postLikes = 0L;
 	}
 
 	public void update(String title, String contents) {
 		this.title = title;
 		this.contents = contents;
+	}
+
+	public void addPostLikes() {
+		this.postLikes = postLikes + 1L;
+	}
+
+	public void subPostLikes() {
+		this.postLikes = postLikes - 1L;
 	}
 }

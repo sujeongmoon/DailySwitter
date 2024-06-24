@@ -41,6 +41,7 @@ public class PostLikeService {
 			.build();
 
 		postLikeRepository.save(postLike);
+		post.addPostLikes();
 	}
 
 	@Transactional
@@ -63,5 +64,6 @@ public class PostLikeService {
 			.build();
 
 		postLikeRepository.delete(postLike);
+		post.subPostLikes();
 	}
 }
