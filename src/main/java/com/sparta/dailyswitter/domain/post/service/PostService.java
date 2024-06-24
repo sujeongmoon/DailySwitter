@@ -101,8 +101,15 @@ public class PostService {
 			.title(post.getTitle())
 			.contents(post.getContents())
 			.userId(post.getUser().getUserId())
+			.postLikes(post.getPostLikes())
 			.createdAt(post.getCreatedAt())
 			.updatedAt(post.getUpdatedAt())
 			.build();
+	}
+
+	public void checkPostUserFound(Post post, User user) {
+		if (post.getUser().getId().equals(user.getId())) {
+			throw new CustomException(ErrorCode.POST_SAME_USER);
+		}
 	}
 }
