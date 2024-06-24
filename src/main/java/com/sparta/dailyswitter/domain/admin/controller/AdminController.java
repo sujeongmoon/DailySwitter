@@ -137,19 +137,17 @@ public class AdminController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping("/comments/{commentId}")
 	public ResponseEntity<CommentResponseDto> adminUpdateComment(
-		@PathVariable Long postId,
 		@PathVariable Long commentId,
 		@RequestBody @Valid CommentRequestDto requestDto) {
 		return ResponseEntity.status(HttpStatus.OK)
-			.body(commentService.adminUpdateComment(postId, commentId, requestDto));
+			.body(commentService.adminUpdateComment(commentId, requestDto));
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/comments/{commentId}")
 	public ResponseEntity<String> deleteComment(
-		@PathVariable Long postId,
 		@PathVariable Long commentId) {
-		commentService.adminDeleteComment(postId, commentId);
+		commentService.adminDeleteComment(commentId);
 		return ResponseEntity.status(HttpStatus.OK)
 			.body("삭제가 완료되었습니다.");
 	}

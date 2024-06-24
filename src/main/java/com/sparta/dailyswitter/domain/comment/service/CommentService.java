@@ -81,14 +81,9 @@ public class CommentService {
 	}
 
 	@Transactional
-	public CommentResponseDto adminUpdateComment(Long postId, Long commentId, CommentRequestDto requestDto) {
-		Post post = postService.findById(postId);
+	public CommentResponseDto adminUpdateComment(Long commentId, CommentRequestDto requestDto) {
 		Comment comment = commentRepository.findById(commentId)
 			.orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
-
-		if (!comment.getPost().getId().equals(post.getId())) {
-			throw new CustomException(COMMENT_NOT_FOUND);
-		}
 
 		comment.updateComment(requestDto);
 
@@ -110,7 +105,7 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void adminDeleteComment(Long postId, Long commentId) {
+	public void adminDeleteComment(Long commentId) {
 		Comment comment = commentRepository.findById(commentId)
 			.orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
 
