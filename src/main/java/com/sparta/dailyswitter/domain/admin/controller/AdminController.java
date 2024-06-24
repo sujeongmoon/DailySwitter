@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sparta.dailyswitter.domain.comment.dto.CommentRequestDto;
+import com.sparta.dailyswitter.domain.comment.dto.CommentResponseDto;
+import com.sparta.dailyswitter.domain.comment.entity.Comment;
 import com.sparta.dailyswitter.domain.comment.service.CommentService;
 import com.sparta.dailyswitter.domain.post.dto.PostRequestDto;
 import com.sparta.dailyswitter.domain.post.dto.PostResponseDto;
@@ -30,7 +33,9 @@ import com.sparta.dailyswitter.domain.user.dto.UserResponseDto;
 import com.sparta.dailyswitter.domain.user.dto.UserRoleChangeRequestDto;
 import com.sparta.dailyswitter.domain.user.entity.User;
 import com.sparta.dailyswitter.domain.user.service.UserService;
+import com.sparta.dailyswitter.security.UserDetailsImpl;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -45,8 +50,8 @@ public class AdminController {
 	// 사용자 관리
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/users")
-	public List<UserResponseDto> getAllUsers() {
-		return userService.getAllUsers();
+	public ResponseEntity<List<UserResponseDto>> getAllUsers() {
+		return ResponseEntity.ok().body(userService.getAllUsers());
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -120,5 +125,32 @@ public class AdminController {
 
 		PostResponseDto pinnedPost = postService.togglePinPost(postId);
 		return ResponseEntity.ok().body(pinnedPost);
+	}
+
+	// 댓글 관리
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@GetMapping("/comments")
+	public ResponseEntity<List<CommentResponseDto>> getAllComments() {
+		return ResponseEntity.ok().body(commentService.getAllComments());
+	}
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PutMapping("/comments/{commentId}")
+	public ResponseEntity<CommentResponseDto> adminUpdateComment(
+		@PathVariable Long postId,
+		@PathVariable Long commentId,
+		@RequestBody @Valid CommentRequestDto requestDto) {
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(commentService.adminUpdateComment(postId, commentId, requestDto));
+	}
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@DeleteMapping("/comments/{commentId}")
+	public ResponseEntity<String> deleteComment(
+		@PathVariable Long postId,
+		@PathVariable Long commentId) {
+		commentService.adminDeleteComment(postId, commentId);
+		return ResponseEntity.status(HttpStatus.OK)
+			.body("삭제가 완료되었습니다.");
 	}
 }
