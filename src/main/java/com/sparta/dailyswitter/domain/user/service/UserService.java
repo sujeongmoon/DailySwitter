@@ -78,6 +78,7 @@ public class UserService {
 	public UserResponseDto toggleBlockStatus(Long id) {
 		User user = findUser(id);
 		user.toggleBlock();
+		userRepository.save(user);
 
 		return new UserResponseDto(user);
 	}

@@ -67,10 +67,10 @@ public class AdminController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping("/users/{userId}/role")
-	public ResponseEntity<UserResponseDto> changeUserRole(
+	public ResponseEntity<UserResponseDto> updateUserRole(
 		@PathVariable Long userId,
 		@RequestBody UserRoleChangeRequestDto userRoleChangeRequestDto) {
-;
+		;
 		return ResponseEntity.ok().body(userService.updateUserRole(userId, userRoleChangeRequestDto));
 	}
 

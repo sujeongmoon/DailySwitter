@@ -27,7 +27,6 @@ public class PostService {
 	private final UserRepository userRepository;
 	private final FollowService followService;
 
-
 	@Transactional
 	public PostResponseDto createPost(PostRequestDto requestDto, String username) {
 		User user = userRepository.findByUserId(username).orElseThrow(

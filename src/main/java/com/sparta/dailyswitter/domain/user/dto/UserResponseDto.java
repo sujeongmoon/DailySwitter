@@ -23,7 +23,6 @@ public class UserResponseDto {
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
-
 	public UserResponseDto(User user) {
 		this.userId = user.getUserId();
 		this.username = user.getUsername();

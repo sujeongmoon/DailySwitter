@@ -1,8 +1,6 @@
 package com.sparta.dailyswitter.domain.comment.service;
 
-import static com.sparta.dailyswitter.common.exception.ErrorCode.COMMENT_NOT_FOUND;
-import static com.sparta.dailyswitter.common.exception.ErrorCode.COMMENT_NOT_USER;
-import static com.sparta.dailyswitter.common.exception.ErrorCode.COMMENT_SAME_USER;
+import static com.sparta.dailyswitter.common.exception.ErrorCode.*;
 
 import java.util.List;
 
@@ -10,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sparta.dailyswitter.common.exception.CustomException;
-import com.sparta.dailyswitter.common.exception.ErrorCode;
 import com.sparta.dailyswitter.domain.comment.dto.CommentRequestDto;
 import com.sparta.dailyswitter.domain.comment.dto.CommentResponseDto;
 import com.sparta.dailyswitter.domain.comment.entity.Comment;
