@@ -9,14 +9,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import com.sparta.dailyswitter.domain.auth.userinfo.OAuth2UserInfo;
 import com.sparta.dailyswitter.domain.user.entity.User;
 import com.sparta.dailyswitter.domain.user.entity.UserRoleEnum;
 
-public class UserDetailsImpl implements UserDetails, OAuth2User, OAuth2UserInfo {
+public class UserDetailsImpl implements UserDetails, OAuth2User {
 
 	private final User user;
 	private Map<String, Object> attributes;
+	private String accessToken;
+	private String refreshToken;
 
 	public UserDetailsImpl(User user) {
 		this.user = user;
@@ -29,6 +30,22 @@ public class UserDetailsImpl implements UserDetails, OAuth2User, OAuth2UserInfo 
 
 	public User getUser() {
 		return user;
+	}
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
+	public String getRefreshToken() {
+		return refreshToken;
+	}
+
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
 	}
 
 	@Override
@@ -75,20 +92,5 @@ public class UserDetailsImpl implements UserDetails, OAuth2User, OAuth2UserInfo 
 	@Override
 	public Map<String, Object> getAttributes() {
 		return attributes;
-	}
-
-	@Override
-	public String getProviderId() {
-		return user.getProviderId();
-	}
-
-	@Override
-	public String getProvider() {
-		return user.getProvider();
-	}
-
-	@Override
-	public String getEmail() {
-		return user.getEmail();
 	}
 }

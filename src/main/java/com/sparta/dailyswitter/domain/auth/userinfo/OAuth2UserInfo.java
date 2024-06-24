@@ -1,12 +1,17 @@
 package com.sparta.dailyswitter.domain.auth.userinfo;
 
-public interface OAuth2UserInfo {
+import java.util.Map;
 
-	String getProviderId();
+public abstract class OAuth2UserInfo {
+	protected Map<String, Object> attributes;
 
-	String getProvider();
+	public OAuth2UserInfo(Map<String, Object> attributes) {
+		this.attributes = attributes;
+	}
 
-	String getEmail();
+	public abstract String getProviderId();
 
-	String getName();
+	public abstract String getName();
+
+	public abstract String getEmail();
 }

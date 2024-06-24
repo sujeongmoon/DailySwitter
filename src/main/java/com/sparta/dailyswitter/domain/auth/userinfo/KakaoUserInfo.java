@@ -2,30 +2,32 @@ package com.sparta.dailyswitter.domain.auth.userinfo;
 
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
+public class KakaoUserInfo extends OAuth2UserInfo {
 
-@AllArgsConstructor
-public class KakaoUserInfo implements OAuth2UserInfo {
-
-	private Map<String, Object> attributes;
+	public KakaoUserInfo(Map<String, Object> attributes) {
+		super(attributes);
+	}
 
 	@Override
 	public String getProviderId() {
-		return attributes.get("id").toString();
-	}
-
-	@Override
-	public String getProvider() {
-		return "kakao";
-	}
-
-	@Override
-	public String getEmail() {
-		return (String)((Map)attributes.get("kakao_accout")).get("email");
+		return String.valueOf(attributes.get("id"));
 	}
 
 	@Override
 	public String getName() {
-		return (String)((Map)attributes.get("properties")).get("nickname");
+		Map<String, Object> properties = (Map<String, Object>)attributes.get("properties");
+		if (properties == null) {
+			return null;
+		}
+		return (String)properties.get("nickname");
+	}
+
+	@Override
+	public String getEmail() {
+		Map<String, Object> kakaoAccount = (Map<String, Object>)attributes.get("kakao_account");
+		if (kakaoAccount == null) {
+			return null;
+		}
+		return (String)kakaoAccount.get("email");
 	}
 }

@@ -1,7 +1,5 @@
 package com.sparta.dailyswitter.config;
 
-import java.util.Arrays;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,36 +11,30 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
 public class SwaggerConfig {
+
 	@Bean
 	public OpenAPI customOpenAPI() {
-		// 액세스 토큰 보안 스키마 설정
-		SecurityScheme accessTokenScheme = new SecurityScheme()
-			.type(SecurityScheme.Type.HTTP)
-			.scheme("bearer")
-			.bearerFormat("JWT")
-			.in(SecurityScheme.In.HEADER)
-			.name("Authorization");
-
-		// 리프레시 토큰 보안 스키마 설정
-		SecurityScheme refreshTokenScheme = new SecurityScheme()
-			.type(SecurityScheme.Type.HTTP)
-			.scheme("bearer")
-			.bearerFormat("JWT")
-			.in(SecurityScheme.In.HEADER)
-			.name("Refresh-Token");
-
-		// 보안 요구 사항 설정
-		SecurityRequirement securityRequirement = new SecurityRequirement()
-			.addList("accessTokenAuth")
-			.addList("refreshTokenAuth");
-
 		return new OpenAPI()
 			.components(new Components()
-				.addSecuritySchemes("accessTokenAuth", accessTokenScheme)
-				.addSecuritySchemes("refreshTokenAuth", refreshTokenScheme))
-			.security(Arrays.asList(securityRequirement))
+				.addSecuritySchemes("bearer-key", new SecurityScheme()
+					.type(SecurityScheme.Type.HTTP)
+					.scheme("bearer")
+					.bearerFormat("JWT")
+					.description("Access Token")
+				)
+				.addSecuritySchemes("refresh-token", new SecurityScheme()
+					.type(SecurityScheme.Type.HTTP)
+					.scheme("bearer")
+					.bearerFormat("JWT")
+					.description("Refresh Token")
+				)
+			)
+			.addSecurityItem(new SecurityRequirement()
+				.addList("bearer-key")
+				.addList("refresh-token")
+			)
 			.info(new Info()
-				.title("DailySwitter")
+				.title("DailySwitter API")
 				.description("하루 일상을 같이 공유 해봐요.")
 				.version("1.0"));
 	}

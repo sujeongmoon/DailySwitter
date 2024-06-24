@@ -1,5 +1,6 @@
 package com.sparta.dailyswitter.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -7,14 +8,9 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -43,6 +39,24 @@ public class WebSecurityConfig {
 	private final PrincipalOauth2UserService principalOauth2UserService;
 	private final UserRepository userRepository;
 
+	@Value("${spring.security.oauth2.client.registration.google.client-id}")
+	private String googleClientId;
+
+	@Value("${spring.security.oauth2.client.registration.google.client-secret}")
+	private String googleClientSecret;
+
+	@Value("${spring.security.oauth2.client.registration.kakao.client-id}")
+	private String kakaoClientId;
+
+	@Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
+	private String kakaoClientSecret;
+
+	@Value("${spring.security.oauth2.client.registration.naver.client-id}")
+	private String naverClientId;
+
+	@Value("${spring.security.oauth2.client.registration.naver.client-secret}")
+	private String naverClientSecret;
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		AuthenticationManager authenticationManager = authenticationManager(authenticationConfiguration);
@@ -50,25 +64,25 @@ public class WebSecurityConfig {
 		http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 			.csrf(csrf -> csrf.disable())
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.authorizeHttpRequests(auth -> auth
+			.authorizeRequests(auth -> auth
 				.requestMatchers(
 					"/resources/**", "/static/**", "/css/**", "/js/**", "/images/**"
 				).permitAll()
 				.requestMatchers(
 					"/v2/api-docs", "/v3/api-docs", "/v3/api-docs/**", "/swagger-resources",
 					"/swagger-resources/**", "/configuration/ui", "/configuration/security", "/swagger-ui/**",
-					"/webjars/**", "/swagger-ui.html", "/api/auth/**"
+					"/webjars/**", "/swagger-ui.html", "/api/auth/**", "/login", "/login.html"
 				).permitAll()
 				.requestMatchers("/security-login/info").authenticated()
 				.requestMatchers("/security-login/admin/**").hasAuthority(UserRoleEnum.ADMIN.name())
 				.anyRequest().authenticated()
 			)
 			.formLogin(form -> form
-				.loginPage("/security-login/login")
+				.loginPage("/login.html")  // 로그인 페이지 경로 설정
 				.usernameParameter("loginId")
 				.passwordParameter("password")
 				.defaultSuccessUrl("/security-login")
-				.failureUrl("/security-login/login")
+				.failureUrl("/login.html?error=true")
 			)
 			.logout(logout -> logout
 				.logoutUrl("/security-login/logout")
@@ -76,8 +90,8 @@ public class WebSecurityConfig {
 				.deleteCookies("JSESSIONID")
 			)
 			.oauth2Login(oauth2 -> oauth2
-				.loginPage("/security-login/login")
-				.defaultSuccessUrl("/security-login")
+				.loginPage("/login.html")  // 로그인 페이지 경로 설정
+				.defaultSuccessUrl("/oauth2-login/success")
 				.userInfoEndpoint()
 				.userService(principalOauth2UserService)
 			)
@@ -90,7 +104,7 @@ public class WebSecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.addAllowedOrigin("*");
+		configuration.addAllowedOriginPattern("*"); // 최신 버전에서는 addAllowedOriginPattern을 사용하는 것이 좋습니다.
 		configuration.addAllowedMethod("*");
 		configuration.addAllowedHeader("*");
 		configuration.setAllowCredentials(true);
@@ -106,33 +120,56 @@ public class WebSecurityConfig {
 	}
 
 	@Bean
-	public OAuth2AuthorizedClientManager authorizedClientManager(
-		ClientRegistrationRepository clientRegistrationRepository,
-		OAuth2AuthorizedClientRepository authorizedClientRepository) {
-
-		DefaultOAuth2AuthorizedClientManager authorizedClientManager =
-			new DefaultOAuth2AuthorizedClientManager(clientRegistrationRepository, authorizedClientRepository);
-
-		return authorizedClientManager;
-	}
-
-	@Bean
 	public ClientRegistrationRepository clientRegistrationRepository() {
-		return new InMemoryClientRegistrationRepository(googleClientRegistration());
+		return new InMemoryClientRegistrationRepository(
+			googleClientRegistration(),
+			kakaoClientRegistration(),
+			naverClientRegistration()
+		);
 	}
 
 	private ClientRegistration googleClientRegistration() {
 		return ClientRegistration.withRegistrationId("google")
-			.clientId("your-client-id")
-			.clientSecret("your-client-secret")
+			.clientId(googleClientId)
+			.clientSecret(googleClientSecret)
 			.scope("openid", "profile", "email")
 			.authorizationUri("https://accounts.google.com/o/oauth2/auth")
 			.tokenUri("https://oauth2.googleapis.com/token")
 			.userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
 			.userNameAttributeName("sub")
 			.clientName("Google")
-			.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)  // 설정 추가
-			.redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")  // 설정 추가
+			.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+			.redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")  // 이 경로가 정확한지 확인
+			.build();
+	}
+
+	private ClientRegistration kakaoClientRegistration() {
+		return ClientRegistration.withRegistrationId("kakao")
+			.clientId(kakaoClientId)
+			.clientSecret(kakaoClientSecret)
+			.scope("profile_nickname", "account_email")
+			.authorizationUri("https://kauth.kakao.com/oauth/authorize")
+			.tokenUri("https://kauth.kakao.com/oauth/token")
+			.userInfoUri("https://kapi.kakao.com/v2/user/me")
+			.userNameAttributeName("id")
+			.clientName("Kakao")
+			.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+			.redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+			.build();
+	}
+
+	private ClientRegistration naverClientRegistration() {
+		return ClientRegistration.withRegistrationId("naver")
+			.clientId(naverClientId)
+			.clientSecret(naverClientSecret)
+			.scope("name", "email")
+			.authorizationUri("https://nid.naver.com/oauth2.0/authorize")
+			.tokenUri("https://nid.naver.com/oauth2.0/token")
+			.userInfoUri("https://openapi.naver.com/v1/nid/me")
+			.userNameAttributeName("response")
+			.clientName("Naver")
+			.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+			.redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
 			.build();
 	}
 }

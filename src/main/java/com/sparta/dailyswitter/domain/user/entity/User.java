@@ -20,17 +20,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user")
+@Table(name = "users") // 테이블 이름을 'users'로 수정
 public class User extends Timestamped {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,41 +48,50 @@ public class User extends Timestamped {
 	@Column(name = "user_name")
 	private String username;
 
-	@NotBlank
-	@Column(name = "password", nullable = false)
+	@Column(name = "password")
 	private String password;
 
-	@NotBlank
 	@Column(name = "email")
 	private String email;
 
-	@NotBlank
+	private String provider;
+
+	private String providerId;
+
 	@Column(name = "intro")
 	private String intro;
 
 	@Column(name = "refresh_token")
 	private String refreshToken;
 
+	@Column(name = "access_token")  // 액세스 토큰 필드 추가
+	private String accessToken;
+
 	@Column(nullable = false)
 	@Enumerated(value = EnumType.STRING)
 	private UserRoleEnum role;
 
-	private Long kakaoId;
+	@Column(unique = true)
+	private String googleId;
 
-	private String provider;
+	@Column(unique = true)
+	private String kakaoId;
 
-	private String providerId;
+	@Column(unique = true)
+	private String naverId;
 
 	@ElementCollection
 	@CollectionTable(name = "password_history", joinColumns = @JoinColumn(name = "user_id"))
 	private List<String> passwordHistory = new ArrayList<>();
 
-	public User(String username, String password, String email, UserRoleEnum role, Long kakaoId) {
+	public User(String username, String password, String email, UserRoleEnum role, String kakaoId, String googleId, String naverId) {
 		this.username = username;
 		this.password = password;
 		this.email = email;
 		this.role = role;
 		this.kakaoId = kakaoId;
+		this.googleId = googleId;
+		this.naverId = naverId;
 	}
 
 	public void updateUserInfo(UserInfoRequestDto userInfoRequestDto) {
@@ -112,11 +124,27 @@ public class User extends Timestamped {
 		this.refreshToken = refreshToken;
 	}
 
+	public void updateAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
 	public void updateStatusSignout() {
 		this.role = UserRoleEnum.WITHDRAW;
 	}
 
 	private String updateField(String newValue, String currentValue) {
 		return newValue == null || newValue.isBlank() ? currentValue : newValue;
+	}
+
+	public void setGoogleId(String googleId) {
+		this.googleId = googleId;
+	}
+
+	public void setKakaoId(String kakaoId) {
+		this.kakaoId = kakaoId;
+	}
+
+	public void setNaverId(String naverId) {
+		this.naverId = naverId;
 	}
 }

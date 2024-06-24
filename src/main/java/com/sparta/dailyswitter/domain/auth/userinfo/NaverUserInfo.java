@@ -2,12 +2,11 @@ package com.sparta.dailyswitter.domain.auth.userinfo;
 
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
+public class NaverUserInfo extends OAuth2UserInfo {
 
-@AllArgsConstructor
-public class NaverUserInfo implements OAuth2UserInfo {
-
-	private Map<String, Object> attributes;
+	public NaverUserInfo(Map<String, Object> attributes) {
+		super(attributes);
+	}
 
 	@Override
 	public String getProviderId() {
@@ -15,17 +14,12 @@ public class NaverUserInfo implements OAuth2UserInfo {
 	}
 
 	@Override
-	public String getProvider() {
-		return "naver";
+	public String getName() {
+		return (String)attributes.get("name");
 	}
 
 	@Override
 	public String getEmail() {
 		return (String)attributes.get("email");
-	}
-
-	@Override
-	public String getName() {
-		return (String)attributes.get("name");
 	}
 }
