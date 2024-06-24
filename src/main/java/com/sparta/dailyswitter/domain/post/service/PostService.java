@@ -64,6 +64,17 @@ public class PostService {
 	}
 
 	@Transactional
+	public PostResponseDto AdminUpdatePost(Long postId, PostRequestDto requestDto) {
+		Post post = postRepository.findById(postId).orElseThrow(
+			() -> new CustomException(ErrorCode.POST_NOT_FOUND)
+		);
+
+		post.update(requestDto.getTitle(), requestDto.getContents());
+		postRepository.save(post);
+		return convertToDto(post);
+	}
+
+	@Transactional
 	public void deletePost(Long postId, String username) {
 
 		Post post = postRepository.findById(postId).orElseThrow(
@@ -78,6 +89,16 @@ public class PostService {
 
 	}
 
+	@Transactional
+	public void AdminDeletePost(Long postId) {
+
+		Post post = postRepository.findById(postId).orElseThrow(
+			() -> new CustomException(ErrorCode.POST_NOT_FOUND)
+		);
+
+		postRepository.delete(post);
+	}
+
 	public PostResponseDto getPost(Long postId) {
 		Post post = postRepository.findById(postId).orElseThrow(
 			() -> new CustomException(ErrorCode.POST_NOT_FOUND)
@@ -87,8 +108,19 @@ public class PostService {
 
 	@Transactional(readOnly = true)
 	public Page<PostResponseDto> getAllPosts(Pageable pageable) {
-		return postRepository.findAllByOrderByCreatedAtDesc(pageable)
+		return postRepository.findAllByOrderByIsPinnedDescCreatedAtDesc(pageable)
 			.map(this::convertToDto);
+	}
+
+	@Transactional
+	public PostResponseDto togglePinPost(Long postId) {
+		Post post = postRepository.findById(postId).orElseThrow(
+			() -> new CustomException(ErrorCode.POST_NOT_FOUND)
+		);
+
+		post.togglePin();
+		postRepository.save(post);
+		return convertToDto(post);
 	}
 
 	public Post findById(Long postId) {

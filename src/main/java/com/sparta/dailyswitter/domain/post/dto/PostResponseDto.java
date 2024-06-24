@@ -10,15 +10,17 @@ public class PostResponseDto {
 	private final String title;
 	private final String contents;
 	private final String userId;
+	private final boolean isPinned;
 	private final LocalDateTime createdAt;
 	private final LocalDateTime updatedAt;
 
 	@Builder
-	public PostResponseDto(String title, String contents, String userId, LocalDateTime createdAt,
+	public PostResponseDto(String title, String contents, String userId, boolean isPinned, LocalDateTime createdAt,
 		LocalDateTime updatedAt) {
 		this.title = title;
 		this.contents = contents;
 		this.userId = userId;
+		this.isPinned = isPinned;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}

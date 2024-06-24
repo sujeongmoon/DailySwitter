@@ -2,8 +2,14 @@ package com.sparta.dailyswitter.domain.admin.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -11,9 +17,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sparta.dailyswitter.domain.comment.service.CommentService;
+import com.sparta.dailyswitter.domain.post.dto.PostRequestDto;
+import com.sparta.dailyswitter.domain.post.dto.PostResponseDto;
+import com.sparta.dailyswitter.domain.post.entity.Post;
 import com.sparta.dailyswitter.domain.post.service.PostService;
 import com.sparta.dailyswitter.domain.user.dto.UserInfoRequestDto;
 import com.sparta.dailyswitter.domain.user.dto.UserResponseDto;
@@ -72,5 +82,43 @@ public class AdminController {
 		@PathVariable Long userId) {
 
 		return ResponseEntity.ok().body(userService.toggleBlockStatus(userId));
+	}
+
+	// 게시글 관리
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@GetMapping("/posts")
+	public ResponseEntity<Page<PostResponseDto>> getAllPosts(
+		@RequestParam(defaultValue = "0") int page) {
+
+		Pageable pageable = PageRequest.of(page, 5);
+		return ResponseEntity.ok().body(postService.getAllPosts(pageable));
+	}
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@GetMapping("/posts/{postId}")
+	public ResponseEntity<?> updatePost(
+		@PathVariable Long postId,
+		@RequestBody PostRequestDto requestDto) {
+
+		PostResponseDto responseDto = postService.AdminUpdatePost(postId, requestDto);
+		return ResponseEntity.ok().body(responseDto);
+	}
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@DeleteMapping("/posts/{postId}")
+	public ResponseEntity<Void> deletePost(
+		@PathVariable Long postId) {
+
+		postService.AdminDeletePost(postId);
+		return ResponseEntity.noContent().build();
+	}
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PatchMapping("/posts/{postId}/pin")
+	public ResponseEntity<PostResponseDto> pinPost(
+		@PathVariable Long postId) {
+
+		PostResponseDto pinnedPost = postService.togglePinPost(postId);
+		return ResponseEntity.ok().body(pinnedPost);
 	}
 }
