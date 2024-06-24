@@ -1,48 +1,52 @@
 package com.sparta.dailyswitter.config;
 
-import java.util.Arrays;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.OAuthFlow;
+import io.swagger.v3.oas.models.security.OAuthFlows;
+import io.swagger.v3.oas.models.security.Scopes;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
 public class SwaggerConfig {
+
 	@Bean
 	public OpenAPI customOpenAPI() {
-		// 액세스 토큰 보안 스키마 설정
-		SecurityScheme accessTokenScheme = new SecurityScheme()
-			.type(SecurityScheme.Type.HTTP)
-			.scheme("bearer")
-			.bearerFormat("JWT")
-			.in(SecurityScheme.In.HEADER)
-			.name("Authorization");
-
-		// 리프레시 토큰 보안 스키마 설정
-		SecurityScheme refreshTokenScheme = new SecurityScheme()
-			.type(SecurityScheme.Type.HTTP)
-			.scheme("bearer")
-			.bearerFormat("JWT")
-			.in(SecurityScheme.In.HEADER)
-			.name("Refresh-Token");
-
-		// 보안 요구 사항 설정
-		SecurityRequirement securityRequirement = new SecurityRequirement()
-			.addList("accessTokenAuth")
-			.addList("refreshTokenAuth");
-
 		return new OpenAPI()
 			.components(new Components()
-				.addSecuritySchemes("accessTokenAuth", accessTokenScheme)
-				.addSecuritySchemes("refreshTokenAuth", refreshTokenScheme))
-			.security(Arrays.asList(securityRequirement))
+				.addSecuritySchemes("BearerAuth", new SecurityScheme()
+					.type(SecurityScheme.Type.HTTP)
+					.scheme("bearer")
+					.bearerFormat("JWT"))
+				.addSecuritySchemes("kakao-oauth2", new SecurityScheme()
+					.type(SecurityScheme.Type.OAUTH2)
+					.flows(new OAuthFlows()
+						.authorizationCode(new OAuthFlow()
+							.authorizationUrl("https://kauth.kakao.com/oauth/authorize")
+							.tokenUrl("https://kauth.kakao.com/oauth/token")
+							.scopes(new Scopes()
+								.addString("profile_nickname", "Profile Nickname Information")
+								.addString("account_email", "Account Email Information")))))
+				.addSecuritySchemes("naver-oauth2", new SecurityScheme()
+					.type(SecurityScheme.Type.OAUTH2)
+					.flows(new OAuthFlows()
+						.authorizationCode(new OAuthFlow()
+							.authorizationUrl("https://nid.naver.com/oauth2.0/authorize")
+							.tokenUrl("https://nid.naver.com/oauth2.0/token")
+							.scopes(new Scopes()
+								.addString("name", "Name Information")
+								.addString("email", "Email Information")))))
+			)
+			.addSecurityItem(new SecurityRequirement().addList("BearerAuth"))
+			.addSecurityItem(new SecurityRequirement().addList("kakao-oauth2"))
+			.addSecurityItem(new SecurityRequirement().addList("naver-oauth2"))
 			.info(new Info()
-				.title("DailySwitter")
+				.title("DailySwitter API")
 				.description("하루 일상을 같이 공유 해봐요.")
 				.version("1.0"));
 	}
