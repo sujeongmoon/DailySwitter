@@ -30,7 +30,7 @@ public class CommentLikeService {
 
 		CommentLikeId commentLikeId = CommentLikeId.builder()
 			.user(user)
-			.post(post)
+			.comment(comment)
 			.build();
 
 		if (commentLikeRepository.findById(commentLikeId).isPresent()) {
@@ -48,13 +48,14 @@ public class CommentLikeService {
 		commentLikeRepository.save(commentLike);
 	}
 
+	@Transactional
 	public void deleteCommentLike(Long postId, Long commentId, User user) {
 		Comment comment = commentService.findById(commentId);
 		Post post = postService.findById(postId);
 
 		CommentLikeId commentLikeId = CommentLikeId.builder()
 			.user(user)
-			.post(post)
+			.comment(comment)
 			.build();
 
 		if (commentLikeRepository.findById(commentLikeId).isEmpty()) {

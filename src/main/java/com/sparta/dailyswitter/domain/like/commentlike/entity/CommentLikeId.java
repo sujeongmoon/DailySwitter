@@ -2,6 +2,7 @@ package com.sparta.dailyswitter.domain.like.commentlike.entity;
 
 import java.io.Serializable;
 
+import com.sparta.dailyswitter.domain.comment.entity.Comment;
 import com.sparta.dailyswitter.domain.post.entity.Post;
 import com.sparta.dailyswitter.domain.user.entity.User;
 
@@ -26,12 +27,12 @@ public class CommentLikeId implements Serializable {
 	private User user;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "post_id")
-	private Post post;
+	@JoinColumn(name = "comment_id")
+	private Comment comment;
 
 	@Builder
-	public CommentLikeId(User user, Post post) {
+	public CommentLikeId(User user, Comment comment) {
 		this.user = user;
-		this.post = post;
+		this.comment = comment;
 	}
 }
