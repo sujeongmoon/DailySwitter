@@ -14,4 +14,5 @@ import com.sparta.dailyswitter.domain.user.entity.User;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 	Page<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
+	Page<Post> findByUserInOrderByCreatedAtDesc(List<User> users, Pageable pageable);
 }

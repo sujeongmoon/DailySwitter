@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sparta.dailyswitter.domain.post.dto.PostRequestDto;
 import com.sparta.dailyswitter.domain.post.dto.PostResponseDto;
 import com.sparta.dailyswitter.domain.post.service.PostService;
+import com.sparta.dailyswitter.security.UserDetailsImpl;
 import com.sparta.dailyswitter.security.UserDetailsServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
 public class PostController {
+
+	private static final int PAGE_SIZE = 5;
 
 	private final PostService postService;
 
@@ -67,7 +70,14 @@ public class PostController {
 
 	@GetMapping
 	public Page<PostResponseDto> getAllPosts(@RequestParam(defaultValue = "0") int page) {
-		Pageable pageable = PageRequest.of(page, 5);
+		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
 		return postService.getAllPosts(pageable);
+	}
+
+	@GetMapping("/following")
+	public Page<PostResponseDto> getFollowingPosts(@RequestParam(defaultValue = "0") int page,
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+		return postService.getFollowedPosts(userDetails.getUser(), pageable);
 	}
 }
