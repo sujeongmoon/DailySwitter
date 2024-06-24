@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -18,6 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.sparta.dailyswitter.common.exception.CustomAccessDeniedHandler;
 import com.sparta.dailyswitter.domain.auth.service.PrincipalOauth2UserService;
 import com.sparta.dailyswitter.domain.user.entity.UserRoleEnum;
 import com.sparta.dailyswitter.domain.user.repository.UserRepository;
@@ -31,12 +33,14 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
 	private final JwtUtil jwtUtil;
 	private final UserDetailsServiceImpl userDetailsService;
 	private final AuthenticationConfiguration authenticationConfiguration;
 	private final PrincipalOauth2UserService principalOauth2UserService;
+	private final CustomAccessDeniedHandler customAccessDeniedHandler;
 	private final UserRepository userRepository;
 
 	@Value("${spring.security.oauth2.client.registration.kakao.client-id}")
@@ -70,6 +74,9 @@ public class WebSecurityConfig {
 				.requestMatchers("/security-login/info").authenticated()
 				.requestMatchers("/security-login/admin/**").hasAuthority(UserRoleEnum.ADMIN.name())
 				.anyRequest().authenticated()
+			)
+			.exceptionHandling(exceptionHandling -> exceptionHandling
+				.accessDeniedHandler(customAccessDeniedHandler)
 			)
 			.formLogin(form -> form
 				.loginPage("/login.html")  // 로그인 페이지 경로 설정
