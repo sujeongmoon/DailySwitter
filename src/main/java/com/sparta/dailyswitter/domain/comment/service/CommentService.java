@@ -1,7 +1,6 @@
 package com.sparta.dailyswitter.domain.comment.service;
 
-import static com.sparta.dailyswitter.common.exception.ErrorCode.COMMENT_NOT_FOUND;
-import static com.sparta.dailyswitter.common.exception.ErrorCode.COMMENT_NOT_USER;
+import static com.sparta.dailyswitter.common.exception.ErrorCode.*;
 
 import java.util.List;
 
@@ -53,18 +52,34 @@ public class CommentService {
 		return commentResponseDtoList;
 	}
 
+	public List<CommentResponseDto> getAllComments() {
+		List<Comment> comments = commentRepository.findAllByOrderByCreatedAtDesc();
+
+		return comments.stream()
+			.map(CommentResponseDto::new)
+			.toList();
+	}
+
 	@Transactional
 	public CommentResponseDto updateComment(Long postId, Long commentId, CommentRequestDto requestDto, User user) {
 		Post post = postService.findById(postId);
 		Comment comment = commentRepository.findById(commentId)
 			.orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
 
-		if (!comment.getPost().getId().equals(post.getId())) {
-			throw new CustomException(COMMENT_NOT_FOUND);
-		}
-		if (!comment.getUser().getId().equals(user.getId())) {
-			throw new CustomException(COMMENT_NOT_USER);
-		}
+		checkCommentPostNotFound(comment, post);
+		checkCommentUserNotFound(comment, user);
+		comment.updateComment(requestDto);
+
+		return CommentResponseDto.builder()
+			.comment(comment)
+			.build();
+	}
+
+	@Transactional
+	public CommentResponseDto adminUpdateComment(Long commentId, CommentRequestDto requestDto) {
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
+
 		comment.updateComment(requestDto);
 
 		return CommentResponseDto.builder()
@@ -74,12 +89,43 @@ public class CommentService {
 
 	@Transactional
 	public void deleteComment(Long postId, Long commentId, User user) {
+		Post post = postService.findById(postId);
 		Comment comment = commentRepository.findById(commentId)
 			.orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
 
+		checkCommentPostNotFound(comment, post);
+		checkCommentUserNotFound(comment, user);
+		commentRepository.delete(comment);
+	}
+
+	public Comment findById(Long commentId) {
+		return commentRepository.findById(commentId)
+			.orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND)
+		);
+	}
+
+	public void checkCommentPostNotFound(Comment comment, Post post) {
+		if (!comment.getPost().getId().equals(post.getId())) {
+			throw new CustomException(COMMENT_NOT_FOUND);
+		}
+	}
+
+	public void checkCommentUserNotFound(Comment comment, User user) {
 		if (!comment.getUser().getId().equals(user.getId())) {
 			throw new CustomException(COMMENT_NOT_USER);
 		}
+	}
+
+	public void checkCommentUserFound(Comment comment, User user) {
+		if (comment.getUser().getId().equals(user.getId())) {
+			throw new CustomException(COMMENT_SAME_USER);
+		}
+	}
+
+	@Transactional
+	public void adminDeleteComment(Long commentId) {
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
 
 		commentRepository.delete(comment);
 	}

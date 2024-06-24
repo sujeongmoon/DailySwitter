@@ -1,6 +1,5 @@
 package com.sparta.dailyswitter.domain.post.controller;
 
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sparta.dailyswitter.domain.post.dto.PostRequestDto;
 import com.sparta.dailyswitter.domain.post.dto.PostResponseDto;
 import com.sparta.dailyswitter.domain.post.service.PostService;
-import com.sparta.dailyswitter.security.UserDetailsServiceImpl;
+import com.sparta.dailyswitter.security.UserDetailsImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,10 +29,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostController {
 
+	private static final int PAGE_SIZE = 5;
+
 	private final PostService postService;
 
 	@PostMapping
-	public ResponseEntity<?> createPost(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails) {
+	public ResponseEntity<?> createPost(@RequestBody PostRequestDto requestDto,
+		@AuthenticationPrincipal UserDetails userDetails) {
 		if (userDetails == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
 		}
@@ -42,7 +44,8 @@ public class PostController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails) {
+	public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto,
+		@AuthenticationPrincipal UserDetails userDetails) {
 		if (userDetails == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
 		}
@@ -67,7 +70,14 @@ public class PostController {
 
 	@GetMapping
 	public Page<PostResponseDto> getAllPosts(@RequestParam(defaultValue = "0") int page) {
-		Pageable pageable = PageRequest.of(page, 5);
+		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
 		return postService.getAllPosts(pageable);
+	}
+
+	@GetMapping("/following")
+	public Page<PostResponseDto> getFollowingPosts(@RequestParam(defaultValue = "0") int page,
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+		return postService.getFollowedPosts(userDetails.getUser(), pageable);
 	}
 }

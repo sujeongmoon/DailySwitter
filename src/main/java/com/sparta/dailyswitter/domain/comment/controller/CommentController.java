@@ -29,7 +29,7 @@ public class CommentController {
 
 	private final CommentService commentService;
 
-	@PostMapping("/{postId}/comments")
+	@PostMapping("/posts/{postId}/comments")
 	public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long postId,
 		@RequestBody @Valid CommentRequestDto requestDto,
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -38,13 +38,13 @@ public class CommentController {
 			(postId, requestDto, userDetails.getUser()));
 	}
 
-	@GetMapping("/{postId}/comments")
+	@GetMapping("/posts/{postId}/comments")
 	public ResponseEntity<List<CommentResponseDto>> getComment(@PathVariable Long postId) {
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(commentService.getComment(postId));
 	}
 
-	@PutMapping("/{postId}/comments/{commentId}")
+	@PutMapping("/posts/{postId}/comments/{commentId}")
 	public ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long postId,
 		@PathVariable Long commentId,
 		@RequestBody @Valid CommentRequestDto requestDto,
@@ -53,12 +53,12 @@ public class CommentController {
 			.body(commentService.updateComment(postId, commentId, requestDto, userDetails.getUser()));
 	}
 
-	@DeleteMapping("/{postId}/comments/{commentId}")
+	@DeleteMapping("/posts/{postId}/comments/{commentId}")
 	public ResponseEntity<String> deleteComment(@PathVariable Long postId,
 		@PathVariable Long commentId,
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		commentService.deleteComment(postId, commentId, userDetails.getUser());
 		return ResponseEntity.status(HttpStatus.OK)
-			.body("삭제가 완료되었습니다.");
+			.body("댓글이 삭제되었습니다.");
 	}
 }

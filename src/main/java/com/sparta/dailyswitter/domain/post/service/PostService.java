@@ -1,26 +1,21 @@
 package com.sparta.dailyswitter.domain.post.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.sparta.dailyswitter.common.exception.CustomException;
 import com.sparta.dailyswitter.common.exception.ErrorCode;
-import com.sparta.dailyswitter.domain.auth.dto.LoginRequestDto;
-import com.sparta.dailyswitter.domain.auth.dto.LoginResponseDto;
+import com.sparta.dailyswitter.domain.follow.service.FollowService;
 import com.sparta.dailyswitter.domain.post.dto.PostRequestDto;
 import com.sparta.dailyswitter.domain.post.dto.PostResponseDto;
 import com.sparta.dailyswitter.domain.post.entity.Post;
 import com.sparta.dailyswitter.domain.post.repository.PostRepository;
 import com.sparta.dailyswitter.domain.user.entity.User;
 import com.sparta.dailyswitter.domain.user.repository.UserRepository;
-import com.sparta.dailyswitter.security.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,9 +25,7 @@ public class PostService {
 
 	private final PostRepository postRepository;
 	private final UserRepository userRepository;
-	private final JwtUtil jwtUtil;
-	private final AuthenticationManager authenticationManager;
-
+	private final FollowService followService;
 
 	@Transactional
 	public PostResponseDto createPost(PostRequestDto requestDto, String username) {
@@ -59,7 +52,16 @@ public class PostService {
 		}
 
 		post.update(requestDto.getTitle(), requestDto.getContents());
-		postRepository.save(post);
+		return convertToDto(post);
+	}
+
+	@Transactional
+	public PostResponseDto AdminUpdatePost(Long postId, PostRequestDto requestDto) {
+		Post post = postRepository.findById(postId).orElseThrow(
+			() -> new CustomException(ErrorCode.POST_NOT_FOUND)
+		);
+
+		post.update(requestDto.getTitle(), requestDto.getContents());
 		return convertToDto(post);
 	}
 
@@ -73,9 +75,17 @@ public class PostService {
 		if (!post.getUser().getUserId().equals(username)) {
 			throw new CustomException(ErrorCode.POST_NOT_USER);
 		}
+		postRepository.delete(post);
+	}
+
+	@Transactional
+	public void AdminDeletePost(Long postId) {
+
+		Post post = postRepository.findById(postId).orElseThrow(
+			() -> new CustomException(ErrorCode.POST_NOT_FOUND)
+		);
 
 		postRepository.delete(post);
-
 	}
 
 	public PostResponseDto getPost(Long postId) {
@@ -87,8 +97,24 @@ public class PostService {
 
 	@Transactional(readOnly = true)
 	public Page<PostResponseDto> getAllPosts(Pageable pageable) {
-		return postRepository.findAllByOrderByCreatedAtDesc(pageable)
+		return postRepository.findAllByOrderByIsPinnedDescCreatedAtDesc(pageable)
 			.map(this::convertToDto);
+	}
+
+	@Transactional(readOnly = true)
+	public Page<PostResponseDto> getFollowedPosts(User followerUser, Pageable pageable) {
+		List<User> follows = followService.getFollows(followerUser);
+		return postRepository.findByUserInOrderByCreatedAtDesc(follows, pageable).map(this::convertToDto);
+	}
+
+	@Transactional
+	public PostResponseDto togglePinPost(Long postId) {
+		Post post = postRepository.findById(postId).orElseThrow(
+			() -> new CustomException(ErrorCode.POST_NOT_FOUND)
+		);
+
+		post.togglePin();
+		return convertToDto(post);
 	}
 
 	public Post findById(Long postId) {
@@ -102,8 +128,16 @@ public class PostService {
 			.title(post.getTitle())
 			.contents(post.getContents())
 			.userId(post.getUser().getUserId())
+			.postLikes(post.getPostLikes())
+			.isPinned(post.isPinned())
 			.createdAt(post.getCreatedAt())
 			.updatedAt(post.getUpdatedAt())
 			.build();
+	}
+
+	public void checkPostUserFound(Post post, User user) {
+		if (post.getUser().getId().equals(user.getId())) {
+			throw new CustomException(ErrorCode.POST_SAME_USER);
+		}
 	}
 }

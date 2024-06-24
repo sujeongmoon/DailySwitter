@@ -67,6 +67,9 @@ public class User extends Timestamped {
 	@Column(name = "access_token")  // 액세스 토큰 필드 추가
 	private String accessToken;
 
+  @Column(name = "is_blocked")
+	private boolean isBlocked = false;
+
 	@Column(nullable = false)
 	@Enumerated(value = EnumType.STRING)
 	private UserRoleEnum role;
@@ -126,6 +129,14 @@ public class User extends Timestamped {
 
 	public void updateStatusSignout() {
 		this.role = UserRoleEnum.WITHDRAW;
+	}
+
+	public void updateStatus(UserRoleEnum role) {
+		this.role = role;
+	}
+
+	public void toggleBlock() {
+		this.isBlocked = !this.isBlocked;
 	}
 
 	private String updateField(String newValue, String currentValue) {

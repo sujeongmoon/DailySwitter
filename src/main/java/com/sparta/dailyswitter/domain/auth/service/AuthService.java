@@ -2,6 +2,7 @@ package com.sparta.dailyswitter.domain.auth.service;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,7 +30,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthService {
 
-	private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+	@Value("${admin.token}")
+	private String adminToken;
+
 	private final AuthenticationManager authenticationManager;
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
@@ -53,7 +56,7 @@ public class AuthService {
 
 		UserRoleEnum role = UserRoleEnum.USER;
 		if (requestDto.isAdmin()) {
-			if (!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
+			if (!adminToken.equals(requestDto.getAdminToken())) {
 				throw new CustomException(ErrorCode.INCORRECT_ADMIN_KEY);
 			}
 			role = UserRoleEnum.ADMIN;
