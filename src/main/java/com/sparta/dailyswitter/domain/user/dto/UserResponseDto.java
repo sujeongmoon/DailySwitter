@@ -16,11 +16,15 @@ public class UserResponseDto {
 	private String username;
 	private String email;
 	private String intro;
+	private String role;
+	private boolean isBlocked;
 
 	public UserResponseDto(User user) {
 		this.userId = user.getUserId();
 		this.username = user.getUsername();
 		this.email = user.getEmail();
 		this.intro = user.getIntro();
+		this.role = user.getRole().getAuthority();
+		this.isBlocked = user.isBlocked();
 	}
 }

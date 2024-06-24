@@ -1,5 +1,8 @@
 package com.sparta.dailyswitter.domain.user.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum UserRoleEnum {
 	USER(Authority.USER),
 	ADMIN(Authority.ADMIN),
@@ -8,8 +11,6 @@ public enum UserRoleEnum {
 	private final String authority;
 
 	UserRoleEnum(String authority) { this.authority = authority; }
-
-	public String getAuthority() { return this.authority; }
 
 	public static class Authority {
 		public static final String USER = "ROLE_USER";
