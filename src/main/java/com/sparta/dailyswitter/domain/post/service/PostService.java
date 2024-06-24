@@ -130,6 +130,7 @@ public class PostService {
 			.contents(post.getContents())
 			.userId(post.getUser().getUserId())
 			.postLikes(post.getPostLikes())
+			.isPinned(post.isPinned())
 			.createdAt(post.getCreatedAt())
 			.updatedAt(post.getUpdatedAt())
 			.build();
