@@ -1,5 +1,6 @@
 package com.sparta.dailyswitter.domain.follow.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,20 +25,20 @@ public class FollowController {
 	private final FollowService followService;
 
 	@PostMapping
-	public FollowResponseDto followUser(@RequestBody FollowRequestDto followRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+	public ResponseEntity<?> followUser(@RequestBody FollowRequestDto followRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 		if (userDetails == null || userDetails.getUser() == null) {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
 		followService.followUser(userDetails.getUser().getId(), followRequestDto.getFollowing_user_id());
-		return new FollowResponseDto("팔로우에 추가되었습니다.");
+		return ResponseEntity.ok("팔로우에 추가되었습니다.");
 	}
 
 	@DeleteMapping
-	public FollowResponseDto  unfollowUser(@RequestBody FollowRequestDto followRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+	public ResponseEntity<?> unfollowUser(@RequestBody FollowRequestDto followRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 		if (userDetails == null || userDetails.getUser() == null) {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
 		followService.unfollowUser(userDetails.getUser().getId(), followRequestDto.getFollowing_user_id());
-		return new FollowResponseDto("팔로우가 취소되었습니다.");
+		return ResponseEntity.ok("팔로우가 취소되었습니다.");
 	}
 }
