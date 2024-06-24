@@ -46,6 +46,7 @@ public class CommentLikeService {
 			.build();
 
 		commentLikeRepository.save(commentLike);
+		comment.addCommentLikes();
 	}
 
 	@Transactional
@@ -71,5 +72,6 @@ public class CommentLikeService {
 			.build();
 
 		commentLikeRepository.delete(commentLike);
+		comment.subCommentLikes();
 	}
 }
