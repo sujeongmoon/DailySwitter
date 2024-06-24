@@ -8,4 +8,5 @@ import com.sparta.dailyswitter.domain.comment.entity.Comment;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 	List<Comment> findByPostId(Long postId);
+	List<Comment> findAllByOrderByCreatedAtDesc();
 }

@@ -1,9 +1,5 @@
 package com.sparta.dailyswitter.domain.post.entity;
 
-import java.time.LocalDateTime;
-
-import org.springframework.cglib.core.Local;
-
 import com.sparta.dailyswitter.common.util.Timestamped;
 import com.sparta.dailyswitter.domain.user.entity.User;
 
@@ -18,7 +14,6 @@ import jakarta.persistence.ManyToOne;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 @Entity
@@ -34,6 +29,9 @@ public class Post extends Timestamped {
 
 	@Column(nullable = false, name = "contents")
 	private String contents;
+
+	@Column(name = "is_pinned")
+	private boolean isPinned = false;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
@@ -54,6 +52,10 @@ public class Post extends Timestamped {
 	public void update(String title, String contents) {
 		this.title = title;
 		this.contents = contents;
+	}
+
+	public void togglePin() {
+		this.isPinned = !this.isPinned;
 	}
 
 	public void addPostLikes() {

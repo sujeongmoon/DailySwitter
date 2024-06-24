@@ -60,6 +60,9 @@ public class User extends Timestamped {
 	@Column(name = "refresh_token")
 	private String refreshToken;
 
+	@Column(name = "is_blocked")
+	private boolean isBlocked = false;
+
 	@Column(nullable = false)
 	@Enumerated(value = EnumType.STRING)
 	private UserRoleEnum role;
@@ -100,6 +103,14 @@ public class User extends Timestamped {
 
 	public void updateStatusSignout() {
 		this.role = UserRoleEnum.WITHDRAW;
+	}
+
+	public void updateStatus(UserRoleEnum role) {
+		this.role = role;
+	}
+
+	public void toggleBlock() {
+		this.isBlocked = !this.isBlocked;
 	}
 
 	private String updateField(String newValue, String currentValue) {
