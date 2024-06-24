@@ -58,11 +58,11 @@ public class AdminController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/users/{userId}")
-	public ResponseEntity<Void> deleteUser(
+	public ResponseEntity<String> deleteUser(
 		@PathVariable Long userId) {
 
 		userService.deleteUser(userId);
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.ok("사용자가 삭제되었습니다.");
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -104,11 +104,11 @@ public class AdminController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/posts/{postId}")
-	public ResponseEntity<Void> deletePost(
+	public ResponseEntity<String> deletePost(
 		@PathVariable Long postId) {
 
 		postService.AdminDeletePost(postId);
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.ok("게시물이 삭제되었습니다.");
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -141,7 +141,6 @@ public class AdminController {
 	public ResponseEntity<String> deleteComment(
 		@PathVariable Long commentId) {
 		commentService.adminDeleteComment(commentId);
-		return ResponseEntity.status(HttpStatus.OK)
-			.body("삭제가 완료되었습니다.");
+		return ResponseEntity.ok("댓글이 삭제되었습니다.");
 	}
 }
