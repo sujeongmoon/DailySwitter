@@ -15,6 +15,4 @@ public class LoginResponseDto {
 		this.message = message;
 	}
 
-	public LoginResponseDto(String accessToken, String refreshToken) {
-	}
 }

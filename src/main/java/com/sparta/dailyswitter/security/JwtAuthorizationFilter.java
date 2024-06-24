@@ -3,6 +3,7 @@ package com.sparta.dailyswitter.security;
 import java.io.IOException;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.sparta.dailyswitter.common.exception.CustomException;
@@ -50,8 +51,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 	}
 
 	private void setAuthentication(String username) {
-		UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
+		UserDetailsImpl userDetails = (UserDetailsImpl)userDetailsService.loadUserByUsername(username);
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-		authentication.setDetails(userDetails);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 }

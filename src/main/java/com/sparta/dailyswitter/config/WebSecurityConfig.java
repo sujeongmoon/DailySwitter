@@ -39,12 +39,6 @@ public class WebSecurityConfig {
 	private final PrincipalOauth2UserService principalOauth2UserService;
 	private final UserRepository userRepository;
 
-	@Value("${spring.security.oauth2.client.registration.google.client-id}")
-	private String googleClientId;
-
-	@Value("${spring.security.oauth2.client.registration.google.client-secret}")
-	private String googleClientSecret;
-
 	@Value("${spring.security.oauth2.client.registration.kakao.client-id}")
 	private String kakaoClientId;
 
@@ -91,7 +85,7 @@ public class WebSecurityConfig {
 			)
 			.oauth2Login(oauth2 -> oauth2
 				.loginPage("/login.html")  // 로그인 페이지 경로 설정
-				.defaultSuccessUrl("/oauth2-login/success")
+				.defaultSuccessUrl("/api/oauth2-login/success")
 				.userInfoEndpoint()
 				.userService(principalOauth2UserService)
 			)
@@ -122,25 +116,9 @@ public class WebSecurityConfig {
 	@Bean
 	public ClientRegistrationRepository clientRegistrationRepository() {
 		return new InMemoryClientRegistrationRepository(
-			googleClientRegistration(),
 			kakaoClientRegistration(),
 			naverClientRegistration()
 		);
-	}
-
-	private ClientRegistration googleClientRegistration() {
-		return ClientRegistration.withRegistrationId("google")
-			.clientId(googleClientId)
-			.clientSecret(googleClientSecret)
-			.scope("openid", "profile", "email")
-			.authorizationUri("https://accounts.google.com/o/oauth2/auth")
-			.tokenUri("https://oauth2.googleapis.com/token")
-			.userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
-			.userNameAttributeName("sub")
-			.clientName("Google")
-			.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-			.redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")  // 이 경로가 정확한지 확인
-			.build();
 	}
 
 	private ClientRegistration kakaoClientRegistration() {

@@ -9,7 +9,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import com.sparta.dailyswitter.domain.auth.userinfo.GoogleUserInfo;
 import com.sparta.dailyswitter.domain.auth.userinfo.KakaoUserInfo;
 import com.sparta.dailyswitter.domain.auth.userinfo.NaverUserInfo;
 import com.sparta.dailyswitter.domain.auth.userinfo.OAuth2UserInfo;
@@ -38,10 +37,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 		OAuth2UserInfo oAuth2UserInfo = null;
 		String provider = userRequest.getClientRegistration().getRegistrationId();
 
-		if ("google".equals(provider)) {
-			log.info("구글 로그인 요청");
-			oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
-		} else if ("kakao".equals(provider)) {
+		if ("kakao".equals(provider)) {
 			log.info("카카오 로그인 요청");
 			oAuth2UserInfo = new KakaoUserInfo((Map<String, Object>) oAuth2User.getAttributes());
 		} else if ("naver".equals(provider)) {
@@ -73,8 +69,6 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 			user.setNaverId(providerId);
 		} else if ("kakao".equals(provider)) {
 			user.setKakaoId(providerId);
-		} else if ("google".equals(provider)) {
-			user.setGoogleId(providerId);
 		}
 
 		log.info("JWT 토큰 생성 중...");

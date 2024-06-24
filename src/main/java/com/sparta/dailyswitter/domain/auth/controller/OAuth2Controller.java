@@ -24,8 +24,8 @@ public class OAuth2Controller {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		if (authentication instanceof OAuth2AuthenticationToken) {
-			OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken)authentication;
-			UserDetailsImpl userDetails = (UserDetailsImpl)authToken.getPrincipal();
+			OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) authentication;
+			UserDetailsImpl userDetails = (UserDetailsImpl) authToken.getPrincipal();
 			String accessToken = userDetails.getAccessToken();
 			String refreshToken = userDetails.getRefreshToken();
 
@@ -50,5 +50,10 @@ public class OAuth2Controller {
 			new SecurityContextLogoutHandler().logout(request, response, auth);
 		}
 		response.sendRedirect("http://localhost:8080/login?logout");
+	}
+
+	@GetMapping("/login")
+	public String loginPage() {
+		return "redirect:/login.html";
 	}
 }

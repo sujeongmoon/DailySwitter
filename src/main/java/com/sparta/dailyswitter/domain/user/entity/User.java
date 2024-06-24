@@ -72,9 +72,6 @@ public class User extends Timestamped {
 	private UserRoleEnum role;
 
 	@Column(unique = true)
-	private String googleId;
-
-	@Column(unique = true)
 	private String kakaoId;
 
 	@Column(unique = true)
@@ -90,7 +87,6 @@ public class User extends Timestamped {
 		this.email = email;
 		this.role = role;
 		this.kakaoId = kakaoId;
-		this.googleId = googleId;
 		this.naverId = naverId;
 	}
 
@@ -134,10 +130,6 @@ public class User extends Timestamped {
 
 	private String updateField(String newValue, String currentValue) {
 		return newValue == null || newValue.isBlank() ? currentValue : newValue;
-	}
-
-	public void setGoogleId(String googleId) {
-		this.googleId = googleId;
 	}
 
 	public void setKakaoId(String kakaoId) {

@@ -29,8 +29,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	private final UserRepository userRepository;
 
 	@Override
-	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-		throws AuthenticationException {
+	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 		try {
 			LoginRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(), LoginRequestDto.class);
 			return authenticationManager.authenticate(
@@ -47,8 +46,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	}
 
 	@Override
-	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-		FilterChain chain, Authentication authentication) {
+	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
 		User user = ((UserDetailsImpl)authentication.getPrincipal()).getUser();
 		String userId = user.getUserId();
 
@@ -56,15 +54,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		String refreshToken = jwtUtil.createRefreshToken(userId);
 
 		response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
-		response.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, token);
+		response.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, refreshToken);
 
 		user.updateRefresh(refreshToken);
 		userRepository.save(user);
 	}
 
 	@Override
-	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-		AuthenticationException failed) {
+	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
 		response.setStatus(401);
 	}
 }
