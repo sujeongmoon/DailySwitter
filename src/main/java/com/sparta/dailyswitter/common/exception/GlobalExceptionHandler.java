@@ -3,6 +3,7 @@ package com.sparta.dailyswitter.common.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -31,6 +32,15 @@ public class GlobalExceptionHandler {
 			.path(request.getRequestURI())
 			.build();
 		return new ResponseEntity<>(exceptionResponse, HttpStatusCode.valueOf(e.getErrorCode().getStatus()));
+	}
+
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<ExceptionResponse> handleAccessDeniedException(HttpServletRequest request, AccessDeniedException e) {
+		ExceptionResponse exceptionResponse = ExceptionResponse.builder()
+			.msg(ErrorCode.UNAUTHORIZED_ADMIN.getMsg())
+			.path(request.getRequestURI())
+			.build();
+		return new ResponseEntity<>(exceptionResponse, HttpStatus.FORBIDDEN);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
