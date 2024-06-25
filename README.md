@@ -2,7 +2,7 @@
 - 소개 : 하루 일상을 가볍게 적어봐요.
 
 - 프로젝트 기간 : 2024.06.19 ~ 2024.06.25
-- Teck Stack :  <img src="https://img.shields.io/badge/Java-007396?style=flat-square&logo=Java&logoColor=white"> <img src="https://img.shields.io/badge/Spring-6DB33F?style=flat-square&logo=Spring&logoColor=white"/>
+- Teck Stack :  <img src="https://img.shields.io/badge/Java-007396?style=flat-square&logo=Java&logoColor=white"> <img src="https://img.shields.io/badge/Spring-6DB33F?style=flat-square&logo=Spring&logoColor=white"/> <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white"/>
 - 버전: JDK 17
 - 개발 환경: IntelliJ
 
@@ -11,7 +11,7 @@
 1. 팀명 : 4leaf
 
    팀소개 : 일상 기록을 쉽고 즐겁게 만드는 프로젝트, 일상스위터를 개발하는 팀입니다.
-    
+
 2. 구현기능
 
    필수 구현
@@ -64,7 +64,7 @@
             - 특정 게시물에 대한 댓글 조회
     </details>
 
-    추가 구현
+   추가 구현
     <details>
        <summary>백오피스 기능</summary> 
             - 전체 회원 조회<br>
@@ -99,19 +99,20 @@
          <summary>소셜로그인</summary> 
             - 네이버 소셜 로그인 구현 
     </details>
-     
+
 3. 역할분담
-    - 최현진 [팀장]
-        - 프로필 관리 및 비밀번호 관리, 백오피스
-    - 문수정
-        - 댓글 CRUD, 좋아요
-    - 박태순
-        - 사용자 인증 및 회원 관리, 소셜 로그인
-    - 조성훈
-        - 게시물 CRUD, 팔로우
+   - 최현진 [팀장]
+      - 프로필 관리 및 비밀번호 관리, 백오피스
+   - 문수정
+      - 댓글 CRUD, 좋아요
+   - 박태순
+      - 사용자 인증 및 회원 관리, 소셜 로그인
+   - 조성훈
+      - 게시물 CRUD, 팔로우
 ## API 명세서
 ![image](https://github.com/HyeonjinChoi/DailySwitter/assets/63872787/fda006a1-bf15-4571-8a3e-f35cc05db21f)
-![image](https://github.com/HyeonjinChoi/DailySwitter/assets/63872787/230aa64e-3c3b-4a49-b928-d3c3316a371a)
+![image](https://github.com/HyeonjinChoi/DailySwitter/assets/63872787/edbd89b3-7a71-4966-94a1-437818c6d801)
+
 
 
 ## ERD Diagram
