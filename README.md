@@ -1,7 +1,7 @@
 # 🍀 **일상스위터**
 - 소개 : 하루 일상을 가볍게 적어봐요.
 
-- 프로젝트 기간 : 2024.06.19 ~ 2024.06.21
+- 프로젝트 기간 : 2024.06.19 ~ 2024.06.25
 - Teck Stack :  <img src="https://img.shields.io/badge/Java-007396?style=flat-square&logo=Java&logoColor=white"> <img src="https://img.shields.io/badge/Spring-6DB33F?style=flat-square&logo=Spring&logoColor=white"/>
 - 버전: JDK 17
 - 개발 환경: IntelliJ
@@ -13,7 +13,8 @@
    팀소개 : 일상 기록을 쉽고 즐겁게 만드는 프로젝트, 일상스위터를 개발하는 팀입니다.
     
 2. 구현기능
-필수 구현
+
+   필수 구현
     <details>
        <summary>사용자 인증 및 회원 관리</summary> 
             - 회원가입 기능<br>
@@ -62,18 +63,57 @@
             - 댓글 조회 기능<br>
             - 특정 게시물에 대한 댓글 조회
     </details>
+
+    추가 구현
+    <details>
+       <summary>백오피스 기능</summary> 
+            - 전체 회원 조회<br>
+            - 특정 회원 정보 수정<br>
+            - 특정 회원 삭제<br>
+            - 특정 회원 관리자로 권한 변경<br>
+            - 특정 회원 차단<br>
+            - 전체 게시글 조회<br>
+            - 특정 게시글 정보 수정<br>
+            - 특정 게시글 삭제<br>
+            - 특정 게시글 상단에 고정<br>
+            - 전체 댓글 조회<br>
+            - 특정 댓글 정보 수정<br>
+            - 특정 댓글 삭제
+    </details>
+
+      <details>
+         <summary>게시물 및 댓글 좋아요 / 좋아요 취소 기능</summary> 
+            - 게시물 및 댓글 좋아요, 좋아요 취소<br>
+            - 자신의 게시물과 댓글은 좋아요 불가능<br>
+            - 같은 게시물에는 사용자당 한 번만 좋아요
+    </details>
+
+    <details>
+         <summary>팔로우 기능</summary> 
+            - 특정 사용자 팔로우 및 언팔로우<br>
+            - 팔로우하는 사용자 게시물 조회<br>
+            - 팔로우하는 사용자 게시물 조회 시 최신순
+    </details>
+
+    <details>
+         <summary>소셜로그인</summary> 
+            - 네이버 소셜 로그인 구현 
+    </details>
      
 3. 역할분담
     - 최현진 [팀장]
-        - 프로필 관리 및 비밀번호 관리
+        - 프로필 관리 및 비밀번호 관리, 백오피스
     - 문수정
-        - 댓글 CRUD
+        - 댓글 CRUD, 좋아요
     - 박태순
-        - 사용자 인증 및 회원 관리
+        - 사용자 인증 및 회원 관리, 소셜 로그인
     - 조성훈
-        - 게시물 CRUD
+        - 게시물 CRUD, 팔로우
 ## API 명세서
-![image](https://github.com/HyeonjinChoi/DailySwitter/assets/63872787/dedf30dd-ec73-47fd-9a74-d92804eac2a8)
+![image](https://github.com/HyeonjinChoi/DailySwitter/assets/63872787/fda006a1-bf15-4571-8a3e-f35cc05db21f)
+![image](https://github.com/HyeonjinChoi/DailySwitter/assets/63872787/230aa64e-3c3b-4a49-b928-d3c3316a371a)
+
 
 ## ERD Diagram
-![image](https://github.com/HyeonjinChoi/DailySwitter/assets/63872787/3b0a57df-0e99-428d-ac89-bdf7c54266e9)
+![image](https://github.com/HyeonjinChoi/DailySwitter/assets/63872787/27ad7e03-2c97-4f55-a452-3eae1530d2f6)
+
