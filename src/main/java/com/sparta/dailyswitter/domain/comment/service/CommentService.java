@@ -4,6 +4,8 @@ import static com.sparta.dailyswitter.common.exception.ErrorCode.*;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,16 +41,14 @@ public class CommentService {
 			.build();
 	}
 
-	public List<CommentResponseDto> getComment(Long postId) {
-		List<Comment> commentList = commentRepository.findByPostId(postId);
+	public Page<CommentResponseDto> getComment(Long postId, Pageable pageable) {
+		//Page<Comment> commentList = commentRepository.findByPostIdOrderByCreatedAtDesc(postId, pageable);
+		Post post = postService.findById(postId);
+		Page<Comment> commentList = commentRepository.getComment(post, pageable);
 		if (commentList.isEmpty()) {
 			throw new CustomException(COMMENT_NOT_FOUND);
 		}
-		List<CommentResponseDto> commentResponseDtoList = commentList.stream()
-			.map(comment -> CommentResponseDto.builder()
-				.comment(comment)
-				.build())
-			.toList();
+		Page<CommentResponseDto> commentResponseDtoList = commentList.map(CommentResponseDto::new);
 		return commentResponseDtoList;
 	}
 

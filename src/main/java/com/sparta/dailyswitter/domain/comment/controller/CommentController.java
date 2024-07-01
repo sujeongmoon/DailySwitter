@@ -1,7 +1,9 @@
 package com.sparta.dailyswitter.domain.comment.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sparta.dailyswitter.domain.comment.dto.CommentRequestDto;
@@ -28,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class CommentController {
 
 	private final CommentService commentService;
+	private static final int COMMENT_PAGE_SIZE = 5;
 
 	@PostMapping("/posts/{postId}/comments")
 	public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long postId,
@@ -39,9 +43,12 @@ public class CommentController {
 	}
 
 	@GetMapping("/posts/{postId}/comments")
-	public ResponseEntity<List<CommentResponseDto>> getComment(@PathVariable Long postId) {
+	public ResponseEntity<Page<CommentResponseDto>> getComment(@PathVariable Long postId,
+		@RequestParam(defaultValue = "0") int page) {
+		Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+		Pageable pageable = PageRequest.of(page, COMMENT_PAGE_SIZE, sort);
 		return ResponseEntity.status(HttpStatus.OK)
-			.body(commentService.getComment(postId));
+			.body(commentService.getComment(postId, pageable));
 	}
 
 	@PutMapping("/posts/{postId}/comments/{commentId}")
