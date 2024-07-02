@@ -5,6 +5,7 @@ import com.sparta.dailyswitter.domain.comment.dto.CommentRequestDto;
 import com.sparta.dailyswitter.domain.post.entity.Post;
 import com.sparta.dailyswitter.domain.user.entity.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,11 +29,11 @@ public class Comment extends Timestamped {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "userId")
 	private User user;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "postId")
 	private Post post;
 
