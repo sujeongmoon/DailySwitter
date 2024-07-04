@@ -9,6 +9,8 @@ import com.sparta.dailyswitter.domain.comment.dto.CommentRequestDto;
 import com.sparta.dailyswitter.domain.comment.entity.Comment;
 import com.sparta.dailyswitter.domain.like.commentlike.entity.CommentLike;
 import com.sparta.dailyswitter.domain.like.commentlike.entity.CommentLikeId;
+import com.sparta.dailyswitter.domain.like.postlike.entity.PostLike;
+import com.sparta.dailyswitter.domain.like.postlike.entity.PostLikeId;
 import com.sparta.dailyswitter.domain.post.entity.Post;
 import com.sparta.dailyswitter.domain.user.entity.User;
 import com.sparta.dailyswitter.domain.user.entity.UserRoleEnum;
@@ -96,4 +98,16 @@ public class TestUtil {
 		return commentLike;
 	}
 
+	public static PostLike settingPostLike(User user, Post post) {
+		PostLikeId postLikeId = PostLikeId.builder()
+			.user(user)
+			.post(post)
+			.build();
+
+		PostLike postLike = PostLike.builder()
+			.id(postLikeId)
+			.build();
+
+		return postLike;
+	}
 }
