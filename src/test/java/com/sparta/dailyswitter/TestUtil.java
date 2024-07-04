@@ -31,6 +31,36 @@ public class TestUtil {
 		return user;
 	}
 
+	public static User settingUser2() {
+		User user = User.builder()
+			.userId("testuser2")
+			.username("testuser2")
+			.password("Qwerasdf1!")
+			.email("11@11.com")
+			.intro("자기소개")
+			.role(UserRoleEnum.USER)
+			.kakaoId("user2")
+			.naverId("user2")
+			.build();
+
+		return user;
+	}
+
+	public static User settingUser3() {
+		User user = User.builder()
+			.userId("testuser3")
+			.username("testuser3")
+			.password("Qwerasdf1!")
+			.email("11@11.com")
+			.intro("자기소개")
+			.role(UserRoleEnum.USER)
+			.kakaoId("user3")
+			.naverId("user3")
+			.build();
+
+		return user;
+	}
+
 	public static Post settingPost(User user) {
 		Post post = Post.builder()
 			.title("test제목입니다")
