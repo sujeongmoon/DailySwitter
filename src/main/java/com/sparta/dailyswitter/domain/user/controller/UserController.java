@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sparta.dailyswitter.domain.comment.dto.CommentResponseDto;
+import com.sparta.dailyswitter.domain.post.dto.PostResponseDto;
 import com.sparta.dailyswitter.domain.user.dto.UserInfoRequestDto;
 import com.sparta.dailyswitter.domain.user.dto.UserPwRequestDto;
 import com.sparta.dailyswitter.domain.user.dto.UserResponseDto;
@@ -54,7 +55,25 @@ public class UserController {
 		return ResponseEntity.ok().body(userService.updatePassword(userDetails.getUser().getId(), userPwRequestDto));
 	}
 
-	//@GetMapping("/postLikes")
+	@GetMapping("/postLikes")
+	public ResponseEntity<Page<PostResponseDto>> getUserPostLikes(
+		@AuthenticationPrincipal UserDetailsImpl userDetails,
+		@RequestParam(defaultValue = "0") int page) {
+
+		Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+		Pageable pageable = PageRequest.of(page, 5, sort);
+
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(userService.getUserPostLikes(userDetails.getUser(), pageable));
+	}
+
+	@GetMapping("/postLikes/count")
+	public ResponseEntity<Long> getUserPostLikesCount(
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(userService.getUserPostLikesCount(userDetails.getUser()));
+	}
 
 	@GetMapping("/commentLikes")
 	public ResponseEntity<Page<CommentResponseDto>> getUserCommentLikes(
@@ -67,4 +86,13 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(userService.getUserCommentLikes(userDetails.getUser(), pageable));
 	}
+
+	@GetMapping("/commentLikes/count")
+	public ResponseEntity<Long> getUserCommentLikesCount(
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(userService.getUserCommentLikesCount(userDetails.getUser()));
+	}
+
 }

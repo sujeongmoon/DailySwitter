@@ -1,5 +1,7 @@
 package com.sparta.dailyswitter.domain.like.postlike.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,5 +67,19 @@ public class PostLikeService {
 
 		postLikeRepository.delete(postLike);
 		post.subPostLikes();
+	}
+
+	public List<Post> getUserPostLikesPostId(User user) {
+
+		List<Post> postList = postLikeRepository.getPostLikePostId(user);
+		if (postList.isEmpty()) {
+			throw new CustomException(ErrorCode.POST_NOT_FOUND);
+		}
+		return postList;
+	}
+
+	public Long getUserPostLikesCount(User user) {
+		Long userPostLikesCount = postLikeRepository.getUserPostLikesCount(user);
+		return userPostLikesCount;
 	}
 }

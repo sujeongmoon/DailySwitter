@@ -13,6 +13,10 @@ import com.sparta.dailyswitter.domain.comment.dto.CommentResponseDto;
 import com.sparta.dailyswitter.domain.comment.entity.Comment;
 import com.sparta.dailyswitter.domain.comment.service.CommentService;
 import com.sparta.dailyswitter.domain.like.commentlike.service.CommentLikeService;
+import com.sparta.dailyswitter.domain.like.postlike.service.PostLikeService;
+import com.sparta.dailyswitter.domain.post.dto.PostResponseDto;
+import com.sparta.dailyswitter.domain.post.entity.Post;
+import com.sparta.dailyswitter.domain.post.service.PostService;
 import com.sparta.dailyswitter.domain.user.dto.UserInfoRequestDto;
 import com.sparta.dailyswitter.domain.user.dto.UserPwRequestDto;
 import com.sparta.dailyswitter.domain.user.dto.UserResponseDto;
@@ -28,6 +32,8 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final PostLikeService postLikeService;
+	private final PostService postService;
 	private final CommentLikeService commentLikeService;
 	private final CommentService commentService;
 
@@ -83,6 +89,13 @@ public class UserService {
 		userRepository.deleteById(id);
 	}
 
+	public Page<PostResponseDto> getUserPostLikes(User user, Pageable pageable) {
+
+		List<Post> postLikesPostId = postLikeService.getUserPostLikesPostId(user);
+		Page<PostResponseDto> userLikePostList = postService.getPostLikes(postLikesPostId, pageable);
+		return userLikePostList;
+	}
+
 	public Page<CommentResponseDto> getUserCommentLikes(User user, Pageable pageable) {
 
 		List<Comment> commentLikesCommentId = commentLikeService.getUserCommentLikesCommentId(user);
@@ -91,6 +104,15 @@ public class UserService {
 		return commentResponseDtoList;
 	}
 
+	public Long getUserPostLikesCount(User user) {
+		Long userPostLikesCount = postLikeService.getUserPostLikesCount(user);
+		return userPostLikesCount;
+	}
+
+	public Long getUserCommentLikesCount(User user) {
+		Long userCommentLikesCount = commentLikeService.getUserCommentLikesCount(user);
+		return userCommentLikesCount;
+	}
 
 	public UserResponseDto toggleBlockStatus(Long id) {
 		User user = findUser(id);

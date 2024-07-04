@@ -11,7 +11,7 @@ import com.sparta.dailyswitter.domain.post.entity.Post;
 import com.sparta.dailyswitter.domain.user.entity.User;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom{
 	Page<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
 	Page<Post> findByUserInOrderByCreatedAtDesc(List<User> users, Pageable pageable);
 	Page<Post> findAllByOrderByIsPinnedDescCreatedAtDesc(Pageable pageable);
