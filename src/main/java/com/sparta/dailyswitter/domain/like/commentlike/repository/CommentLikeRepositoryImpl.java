@@ -11,7 +11,7 @@ import com.sparta.dailyswitter.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CommentLikeRepositoryImpl implements CommentLikeRepositoryCustom{
+public class CommentLikeRepositoryImpl implements CommentLikeRepositoryCustom {
 
 	private final JPAQueryFactory jpaQueryFactory;
 
@@ -26,5 +26,17 @@ public class CommentLikeRepositoryImpl implements CommentLikeRepositoryCustom{
 
 		return commentLikeCommentList;
 
+	}
+
+	@Override
+	public Long getUserCommentLikesCount(User user) {
+
+		Long userCommentLikesCount = jpaQueryFactory
+			.select(commentLike.count())
+			.from(commentLike)
+			.where(commentLike.id.user.eq(user))
+			.fetchCount();
+
+		return userCommentLikesCount;
 	}
 }

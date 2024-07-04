@@ -7,4 +7,6 @@ import com.sparta.dailyswitter.domain.user.entity.User;
 
 public interface CommentLikeRepositoryCustom {
 	List<Comment> getCommentLikeCommentId(User user);
+
+	Long getUserCommentLikesCount(User user);
 }

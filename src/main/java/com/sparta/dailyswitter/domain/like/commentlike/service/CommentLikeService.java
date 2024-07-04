@@ -85,4 +85,9 @@ public class CommentLikeService {
 		}
 		return commentList;
 	}
+
+	public Long getUserCommentLikesCount(User user) {
+		Long userCommentLikesCount = commentLikeRepository.getUserCommentLikesCount(user);
+		return userCommentLikesCount;
+	}
 }
