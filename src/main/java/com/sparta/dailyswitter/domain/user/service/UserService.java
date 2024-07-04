@@ -2,11 +2,17 @@ package com.sparta.dailyswitter.domain.user.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.sparta.dailyswitter.common.exception.CustomException;
 import com.sparta.dailyswitter.common.exception.ErrorCode;
+import com.sparta.dailyswitter.domain.comment.dto.CommentResponseDto;
+import com.sparta.dailyswitter.domain.comment.entity.Comment;
+import com.sparta.dailyswitter.domain.comment.service.CommentService;
+import com.sparta.dailyswitter.domain.like.commentlike.service.CommentLikeService;
 import com.sparta.dailyswitter.domain.user.dto.UserInfoRequestDto;
 import com.sparta.dailyswitter.domain.user.dto.UserPwRequestDto;
 import com.sparta.dailyswitter.domain.user.dto.UserResponseDto;
@@ -22,6 +28,8 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final CommentLikeService commentLikeService;
+	private final CommentService commentService;
 
 	public UserResponseDto getUser(Long id) {
 		User user = findUser(id);
@@ -74,6 +82,15 @@ public class UserService {
 	public void deleteUser(Long id) {
 		userRepository.deleteById(id);
 	}
+
+	public Page<CommentResponseDto> getUserCommentLikes(User user, Pageable pageable) {
+
+		List<Comment> commentLikesCommentId = commentLikeService.getUserCommentLikesCommentId(user);
+		Page<Comment> userLikeCommentList = commentService.getCommentLikes(commentLikesCommentId, pageable);
+		Page<CommentResponseDto> commentResponseDtoList = userLikeCommentList.map(CommentResponseDto::new);
+		return commentResponseDtoList;
+	}
+
 
 	public UserResponseDto toggleBlockStatus(Long id) {
 		User user = findUser(id);

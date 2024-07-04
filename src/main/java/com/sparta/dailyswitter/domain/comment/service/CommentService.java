@@ -129,4 +129,11 @@ public class CommentService {
 
 		commentRepository.delete(comment);
 	}
+
+	public Page<Comment> getCommentLikes(List<Comment> commentLikesCommentId, Pageable pageable) {
+
+		Page<Comment> commentList = commentRepository.getComment(commentLikesCommentId, pageable);
+		return commentList;
+	}
+
 }

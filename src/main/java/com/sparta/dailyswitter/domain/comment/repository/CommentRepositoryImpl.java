@@ -37,6 +37,16 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
 		return PageableExecutionUtils.getPage(commentList, pageable, () -> totalSize);
 	}
 
+	@Override
+	public Page<Comment> getComment(List<Comment> commentLikesCommentId, Pageable pageable) {
+		List<Comment> commentList = jpaQueryFactory
+			.selectFrom(comment)
+			.where(comment.in(commentLikesCommentId))
+			.fetch();
+
+		return PageableExecutionUtils.getPage(commentList, pageable, () -> commentLikesCommentId.size());
+	}
+
 	private JPAQuery<Long> countQuery(Post post){
 		return jpaQueryFactory.select(Wildcard.count)
 			.from(comment)

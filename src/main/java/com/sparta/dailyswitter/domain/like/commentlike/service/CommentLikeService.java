@@ -1,5 +1,7 @@
 package com.sparta.dailyswitter.domain.like.commentlike.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,5 +75,14 @@ public class CommentLikeService {
 
 		commentLikeRepository.delete(commentLike);
 		comment.subCommentLikes();
+	}
+
+	public List<Comment> getUserCommentLikesCommentId(User user) {
+
+		List<Comment> commentList = commentLikeRepository.getCommentLikeCommentId(user);
+		if (commentList.isEmpty()) {
+			throw new CustomException(ErrorCode.COMMENT_NOT_FOUND);
+		}
+		return commentList;
 	}
 }
