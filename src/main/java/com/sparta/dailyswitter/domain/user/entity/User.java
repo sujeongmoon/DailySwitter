@@ -20,7 +20,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -74,6 +73,12 @@ public class User extends Timestamped {
 	@Enumerated(value = EnumType.STRING)
 	private UserRoleEnum role;
 
+	@Column
+	private Long postLikesCount;
+
+	@Column
+	private Long commentLikesCount;
+
 	@Column(unique = true)
 	private String kakaoId;
 
@@ -84,11 +89,13 @@ public class User extends Timestamped {
 	@CollectionTable(name = "password_history", joinColumns = @JoinColumn(name = "user_id"))
 	private List<String> passwordHistory = new ArrayList<>();
 
-	public User(String username, String password, String email, UserRoleEnum role, String kakaoId, String googleId, String naverId) {
+	public User(String username, String password, String email, UserRoleEnum role, Long postLikesCount, String kakaoId, String googleId, String naverId) {
 		this.username = username;
 		this.password = password;
 		this.email = email;
 		this.role = role;
+		 this.postLikesCount = 0L;
+		 this.commentLikesCount = 0L;
 		this.kakaoId = kakaoId;
 		this.naverId = naverId;
 	}
@@ -133,6 +140,14 @@ public class User extends Timestamped {
 
 	public void updateStatus(UserRoleEnum role) {
 		this.role = role;
+	}
+
+	public void updatePostLikesCount(long postLikesCount) {
+		this.postLikesCount = postLikesCount;
+	}
+
+	public void updateCommentLikesCount(long commentLikesCount) {
+		this.commentLikesCount = commentLikesCount;
 	}
 
 	public void toggleBlock() {

@@ -104,16 +104,6 @@ public class UserService {
 		return commentResponseDtoList;
 	}
 
-	public Long getUserPostLikesCount(User user) {
-		Long userPostLikesCount = postLikeService.getUserPostLikesCount(user);
-		return userPostLikesCount;
-	}
-
-	public Long getUserCommentLikesCount(User user) {
-		Long userCommentLikesCount = commentLikeService.getUserCommentLikesCount(user);
-		return userCommentLikesCount;
-	}
-
 	public UserResponseDto toggleBlockStatus(Long id) {
 		User user = findUser(id);
 		user.toggleBlock();

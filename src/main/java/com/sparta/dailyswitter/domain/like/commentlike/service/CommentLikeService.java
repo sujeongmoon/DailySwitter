@@ -15,6 +15,8 @@ import com.sparta.dailyswitter.domain.like.commentlike.repository.CommentLikeRep
 import com.sparta.dailyswitter.domain.post.entity.Post;
 import com.sparta.dailyswitter.domain.post.service.PostService;
 import com.sparta.dailyswitter.domain.user.entity.User;
+import com.sparta.dailyswitter.domain.user.repository.UserRepository;
+import com.sparta.dailyswitter.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +26,7 @@ public class CommentLikeService {
 	private final CommentLikeRepository commentLikeRepository;
 	private final PostService postService;
 	private final CommentService commentService;
+	private final UserRepository userRepository;
 
 	@Transactional
 	public void createCommentLike(Long postId, Long commentId, User user) {
@@ -49,6 +52,8 @@ public class CommentLikeService {
 
 		commentLikeRepository.save(commentLike);
 		comment.addCommentLikes();
+		user.updateCommentLikesCount(getUserCommentLikesCount(user));
+		userRepository.save(user);
 	}
 
 	@Transactional
@@ -75,6 +80,8 @@ public class CommentLikeService {
 
 		commentLikeRepository.delete(commentLike);
 		comment.subCommentLikes();
+		user.updateCommentLikesCount(getUserCommentLikesCount(user));
+		userRepository.save(user);
 	}
 
 	public List<Comment> getUserCommentLikesCommentId(User user) {

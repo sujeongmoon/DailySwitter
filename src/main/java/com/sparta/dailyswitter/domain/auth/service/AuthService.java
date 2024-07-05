@@ -69,6 +69,8 @@ public class AuthService {
 			.email(requestDto.getEmail())
 			.intro(requestDto.getIntro())
 			.role(role)
+			 .postLikesCount(0L)
+			 .commentLikesCount(0L)
 			.build();
 
 		return userRepository.save(user);

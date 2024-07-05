@@ -19,6 +19,8 @@ public class UserResponseDto {
 	private String email;
 	private String intro;
 	private String role;
+	private Long postLikesCount;
+	private Long commentLikesCount;
 	private boolean isBlocked;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
@@ -29,6 +31,8 @@ public class UserResponseDto {
 		this.email = user.getEmail();
 		this.intro = user.getIntro();
 		this.role = user.getRole().getAuthority();
+		this.postLikesCount = user.getPostLikesCount();
+		this.commentLikesCount = user.getCommentLikesCount();
 		this.isBlocked = user.isBlocked();
 		this.createdAt = user.getCreatedAt();
 		this.updatedAt = user.getUpdatedAt();

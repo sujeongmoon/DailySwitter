@@ -67,14 +67,6 @@ public class UserController {
 			.body(userService.getUserPostLikes(userDetails.getUser(), pageable));
 	}
 
-	@GetMapping("/postLikes/count")
-	public ResponseEntity<Long> getUserPostLikesCount(
-		@AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(userService.getUserPostLikesCount(userDetails.getUser()));
-	}
-
 	@GetMapping("/commentLikes")
 	public ResponseEntity<Page<CommentResponseDto>> getUserCommentLikes(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -85,14 +77,6 @@ public class UserController {
 
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(userService.getUserCommentLikes(userDetails.getUser(), pageable));
-	}
-
-	@GetMapping("/commentLikes/count")
-	public ResponseEntity<Long> getUserCommentLikesCount(
-		@AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(userService.getUserCommentLikesCount(userDetails.getUser()));
 	}
 
 }
